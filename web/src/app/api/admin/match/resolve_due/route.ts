@@ -132,6 +132,49 @@ export async function POST(req: Request) {
       if (!uErr) {
         resolved++;
         changed++;
+
+        // Kick off a render job (best-effort). If it fails, fight result still stands.
+        try {
+          const { data: existing } = await sb
+            .from("mfb_renders")
+            .select("id,status")
+            .eq("match_id", (m as any).id)
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+          const already = existing?.length && ["queued", "in_progress", "completed"].includes((existing[0] as any).status);
+
+          if (!already) {
+            const aName = (m as any).fighterA?.stage_name || "Fighter A";
+            const bName = (m as any).fighterB?.stage_name || "Fighter B";
+            const aStyle = (m as any).fighterA?.archetype || "";
+            const bStyle = (m as any).fighterB?.archetype || "";
+            const winnerName = winner === "A" ? aName : bName;
+
+            const prompt = `Short boxing highlight reel in a stylized neon arena. Two original fictional fighters: ${aName} (${aStyle}) versus ${bName} (${bStyle}). They trade clean, dramatic punches and footwork. The sequence ends with ${winnerName} clearly winning (non-graphic), with crowd lights flaring. Cinematic handheld energy, high contrast, vibrant stage lighting, no logos, no real people, no copyrighted characters, no text on screen.`;
+
+            const key = process.env.OPENAI_API_KEY;
+            if (key) {
+              const res = await fetch("https://api.openai.com/v1/videos", {
+                method: "POST",
+                headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ model: "sora-2", prompt, size: "1280x720", seconds: "8" }),
+              });
+              const j = await res.json().catch(() => null);
+              if (res.ok && j?.id) {
+                await sb.from("mfb_renders").insert({
+                  match_id: (m as any).id,
+                  provider: "openai",
+                  video_id: j.id,
+                  status: j.status || "queued",
+                  prompt,
+                } as any);
+              }
+            }
+          }
+        } catch {
+          // ignore
+        }
       }
 
       continue;

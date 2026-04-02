@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -20,17 +21,30 @@ export default function MatchClient({ id }: { id: string }) {
   const [betAmt, setBetAmt] = useState("5");
   const sessionId = useMemo(() => getSessionId(), []);
 
+  const [render, setRender] = useState<{ status: string; video_id: string } | null>(null);
+
   async function load() {
     setStatus("Loading...");
-    const res = await fetch("/api/feed");
+    const res = await fetch(`/api/match/${encodeURIComponent(id)}`);
     const j = await res.json().catch(() => null);
     if (!res.ok || !j?.ok) {
       setStatus(`Not ready: ${j?.error || "unknown"}`);
       return;
     }
-    const found = (j.rows || []).find((r: { id: string }) => r.id === id);
-    setM(found || null);
-    setStatus(found ? "" : "Match not found.");
+
+    const match = j.match;
+    setM({
+      id: match.id,
+      status: match.status,
+      closeAt: match.close_at,
+      fighterA: { id: match.fighterA.id, name: match.fighterA.stage_name, archetype: match.fighterA.archetype },
+      fighterB: { id: match.fighterB.id, name: match.fighterB.stage_name, archetype: match.fighterB.archetype },
+      poolA: 0,
+      poolB: 0,
+    } as any);
+
+    setRender(j.render ? { status: j.render.status, video_id: j.render.video_id } : null);
+    setStatus("");
   }
 
   async function bet(side: "A" | "B") {
@@ -111,6 +125,23 @@ export default function MatchClient({ id }: { id: string }) {
           {status ? <Typography sx={{ opacity: 0.8, mt: 2 }}>{status}</Typography> : null}
         </CardContent>
       </Card>
+
+      {render?.video_id ? (
+        <Card>
+          <CardContent>
+            <Typography sx={{ fontWeight: 950, mb: 1 }}>Fight video</Typography>
+            <Typography sx={{ opacity: 0.75, fontSize: 13, mb: 1 }}>
+              Status: {render.status}
+            </Typography>
+            <video
+              controls
+              playsInline
+              style={{ width: "100%", borderRadius: 16, border: "1px solid rgba(255,255,255,0.10)" }}
+              src={`/api/video/${encodeURIComponent(render.video_id)}/content`}
+            />
+          </CardContent>
+        </Card>
+      ) : null}
     </Stack>
   );
 }

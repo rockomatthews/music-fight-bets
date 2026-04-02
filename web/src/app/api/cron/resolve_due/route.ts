@@ -6,15 +6,31 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-function getSecretFromReq(req: Request) {
+function bearer(req: Request) {
+  const h = req.headers.get("authorization") || "";
+  const m = h.match(/^Bearer\s+(.+)$/i);
+  return m?.[1] || "";
+}
+
+function querySecret(req: Request) {
   const url = new URL(req.url);
   return url.searchParams.get("secret") || "";
 }
 
+function cronAuthed(req: Request) {
+  // Preferred: Vercel Cron secret via Authorization header
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret) return bearer(req) === cronSecret;
+
+  // Back-compat: custom query secret
+  const legacy = process.env.MFB_CRON_SECRET;
+  if (legacy) return querySecret(req) === legacy;
+
+  return false;
+}
+
 export async function GET(req: Request) {
-  const secret = getSecretFromReq(req);
-  const cronSecret = process.env.MFB_CRON_SECRET || "";
-  if (!cronSecret || secret !== cronSecret) {
+  if (!cronAuthed(req)) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
