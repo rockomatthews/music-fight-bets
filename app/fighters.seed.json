@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "notes": "Original fighters with music-legend parody aesthetic. No real names, no likeness. Use as seeds; can be regenerated.",
+  "fighters": [
+    {
+      "id": "vf_barogue",
+      "stageName": "Velvet Fugue",
+      "archetype": "Baroque Virtuoso",
+      "genre": "baroque",
+      "palette": ["#1a0f0a", "#d2b48c", "#8b0000"],
+      "signatureMoves": ["Counterpoint Cross", "Harpsichord Hook", "Fugue Feint"],
+      "promptStyle": "ornate embroidered coat, powdered-wig silhouette, candlelit theater, gilded details"
+    },
+    {
+      "id": "nk_neonkeys",
+      "stageName": "Neon Keys",
+      "archetype": "Synthwave Idol",
+      "genre": "synthwave",
+      "palette": ["#00e5ff", "#ff00c8", "#101018"],
+      "signatureMoves": ["Arp Uppercut", "Laser Lariat", "Chorus Crash"],
+      "promptStyle": "retro-futuristic stage, neon rim light, reflective jacket, haze, analog vibes"
+    },
+    {
+      "id": "ig_iron_lick",
+      "stageName": "Iron Lick",
+      "archetype": "Delta Blues Phantom",
+      "genre": "blues",
+      "palette": ["#0b1320", "#6b4e2e", "#c8b08a"],
+      "signatureMoves": ["Bottleneck Slam", "12-Bar Barrage", "Gravel-Voice Gripper"],
+      "promptStyle": "smoky juke joint atmosphere, worn leather, moody sidelights, dust motes"
+    },
+    {
+      "id": "rp_rivet_punk",
+      "stageName": "Rivet Punk",
+      "archetype": "Punk Shredder",
+      "genre": "punk",
+      "palette": ["#111111", "#ff3b3b", "#fdd104"],
+      "signatureMoves": ["Stage-Dive Tackle", "Feedback Frenzy", "Riff Rake"],
+      "promptStyle": "gritty club, torn patches, spikes (non-weapon), harsh practicals, handheld energy"
+    },
+    {
+      "id": "ot_aria_titan",
+      "stageName": "Aria Titan",
+      "archetype": "Opera Titan",
+      "genre": "opera",
+      "palette": ["#0b0b12", "#ffffff", "#b300ff"],
+      "signatureMoves": ["Crescendo Crush", "Bravo Breaker", "Cape Cyclone"],
+      "promptStyle": "dramatic spotlight, velvet curtains, grand stage, high-contrast cinematic look"
+    },
+    {
+      "id": "dj_glassgroove",
+      "stageName": "Glass Groove",
+      "archetype": "Disco Mirage",
+      "genre": "disco",
+      "palette": ["#ffd700", "#00ffcc", "#1b0033"],
+      "signatureMoves": ["Mirrorball Maul", "Sequin Slide", "Saturday Night Smash"],
+      "promptStyle": "sparkling lights, dancefloor reflections, stylized motion blur, glossy 70s"
+    },
+    {
+      "id": "mm_metal_monk",
+      "stageName": "Metal Monk",
+      "archetype": "Doom Riff Sentinel",
+      "genre": "metal",
+      "palette": ["#0a0a0a", "#444444", "#8a2be2"],
+      "signatureMoves": ["Doom Drop", "Palm-Mute Pummel", "Thunder Kick"],
+      "promptStyle": "fog, backlit silhouettes, slow heavy camera moves, industrial arena"
+    },
+    {
+      "id": "cp_chordpirate",
+      "stageName": "Chord Pirate",
+      "archetype": "Sea Shanty Brawler",
+      "genre": "folk",
+      "palette": ["#082032", "#2c394b", "#c4a35a"],
+      "signatureMoves": ["Anchor Arm", "Chorus Clinch", "Deck-Swipe"],
+      "promptStyle": "weathered ropes, lantern glow, salty haze, cinematic tavern vibe"
+    },
+    {
+      "id": "sv_sunvox",
+      "stageName": "Sun Vox",
+      "archetype": "Gospel Flash",
+      "genre": "gospel",
+      "palette": ["#0a0a12", "#fdd104", "#ffffff"],
+      "signatureMoves": ["Hallelujah Hammer", "Amen Arc", "Choir-Charge"],
+      "promptStyle": "warm volumetric light rays, uplifting energy, clean stage design"
+    },
+    {
+      "id": "kb_kitebeat",
+      "stageName": "Kite Beat",
+      "archetype": "K-Pop Dynamo",
+      "genre": "pop",
+      "palette": ["#ff8bd1", "#7afcff", "#0a0a12"],
+      "signatureMoves": ["Choreo Chop", "Hook-Line Hit", "Encore Elbow"],
+      "promptStyle": "bright modern stage, crisp lighting, energetic camera, confetti (no brands)"
+    }
+  ]
+}
