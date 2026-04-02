@@ -1,0 +1,45 @@
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(900px 260px at 20% 0%, rgba(253, 209, 4, 0.12), transparent 60%),
+    radial-gradient(900px 280px at 90% 10%, rgba(255, 43, 214, 0.10), transparent 62%),
+    radial-gradient(900px 280px at 70% 90%, rgba(52, 211, 255, 0.08), transparent 60%),
+    #070712;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mfbWrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px;
+}
+
+.mfbTopbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(10px);
+  background: rgba(7, 7, 18, 0.60);
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
