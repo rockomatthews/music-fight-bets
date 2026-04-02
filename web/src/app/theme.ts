@@ -10,6 +10,7 @@ export const theme = createTheme({
     primary: { main: "#fdd104" }, // electric yellow
     secondary: { main: "#ff2bd6" }, // neon magenta
     info: { main: "#34d3ff" }, // neon cyan
+    success: { main: "#2d7bff", contrastText: "#ffffff" }, // electric blue for option B
   },
   shape: { borderRadius: 18 },
   typography: {

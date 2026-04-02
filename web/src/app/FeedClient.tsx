@@ -112,7 +112,9 @@ export default function FeedClient() {
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
                   <Button variant="contained" onClick={() => bet(m.id, "A")}>Bet {m.fighterA.name}</Button>
-                  <Button variant="outlined" onClick={() => bet(m.id, "B")}>Bet {m.fighterB.name}</Button>
+                  <Button variant="contained" color="success" onClick={() => bet(m.id, "B")} sx={{ color: "#fff" }}>
+                    Bet {m.fighterB.name}
+                  </Button>
                   <Button component={Link} href={`/match/${m.id}`} color="inherit">View</Button>
                 </Stack>
               </Stack>

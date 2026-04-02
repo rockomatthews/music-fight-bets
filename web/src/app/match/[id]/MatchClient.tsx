@@ -103,7 +103,9 @@ export default function MatchClient({ id }: { id: string }) {
               <Typography sx={{ opacity: 0.75 }}>{m.fighterB.archetype}</Typography>
               <Typography sx={{ opacity: 0.75, mt: 0.5 }}>Pool: {m.poolB.toFixed(2)}</Typography>
             </Box>
-            <Button variant="outlined" size="large" onClick={() => bet("B")}>Bet B</Button>
+            <Button variant="contained" color="success" size="large" onClick={() => bet("B")} sx={{ color: "#fff" }}>
+              Bet B
+            </Button>
           </Stack>
 
           {status ? <Typography sx={{ opacity: 0.8, mt: 2 }}>{status}</Typography> : null}
