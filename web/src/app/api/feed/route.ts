@@ -14,8 +14,9 @@ export async function GET() {
 
   const { data: matches, error } = await sb
     .from("mfb_matches")
+    // Alias the two joins so PostgREST doesn't collide table names
     .select(
-      "id, status, close_at, fighter_a_id, fighter_b_id, mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name, archetype), mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name, archetype)"
+      "id, status, close_at, fighter_a_id, fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name, archetype), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name, archetype)"
     )
     .order("created_at", { ascending: false })
     .limit(25);
@@ -50,14 +51,14 @@ export async function GET() {
   }
 
   const rows = (matches || []).map((m: any) => {
-    const a = m.mfb_fighters?.stage_name || m.fighter_a_id;
-    const b = (m as any).mfb_fighters_1?.stage_name || m.fighter_b_id;
+    const a = m.fighterA?.stage_name || m.fighter_a_id;
+    const b = m.fighterB?.stage_name || m.fighter_b_id;
     return {
       id: m.id,
       status: m.status,
       closeAt: m.close_at,
-      fighterA: { id: m.fighter_a_id, name: a, archetype: m.mfb_fighters?.archetype },
-      fighterB: { id: m.fighter_b_id, name: b, archetype: (m as any).mfb_fighters_1?.archetype },
+      fighterA: { id: m.fighter_a_id, name: a, archetype: m.fighterA?.archetype },
+      fighterB: { id: m.fighter_b_id, name: b, archetype: m.fighterB?.archetype },
       poolA: pools[m.id]?.a || 0,
       poolB: pools[m.id]?.b || 0,
     };
