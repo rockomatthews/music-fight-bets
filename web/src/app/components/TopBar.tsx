@@ -22,6 +22,9 @@ export function TopBar() {
             <Button component={Link} href="/fighters" color="inherit" sx={{ opacity: 0.9 }}>
               Fighters
             </Button>
+            <Button component={Link} href="/admin" color="inherit" sx={{ opacity: 0.75 }}>
+              Admin
+            </Button>
           </Toolbar>
         </AppBar>
       </div>
