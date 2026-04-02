@@ -12,6 +12,13 @@ create table if not exists public.mfb_fighters (
   signature_moves jsonb not null default '[]'::jsonb,
   prompt_style text,
   avatar_url text,
+
+  record_w int not null default 0,
+  record_l int not null default 0,
+  strengths jsonb not null default '[]'::jsonb,
+  weaknesses jsonb not null default '[]'::jsonb,
+  style_tags jsonb not null default '[]'::jsonb,
+
   attrs jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
 );

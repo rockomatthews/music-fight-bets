@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/poll_renders",
       "schedule": "*/1 * * * *"
+    },
+    {
+      "path": "/api/cron/daily_fighter_state",
+      "schedule": "10 7 * * *"
     }
   ]
 }
