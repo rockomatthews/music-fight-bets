@@ -48,7 +48,8 @@ export default function AdminClient() {
     const res = await fetch("/api/feed");
     const j = await res.json().catch(() => null);
     if (!res.ok || !j?.ok) {
-      setStatus(`Feed error: ${j?.error || "unknown"}`);
+      const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
+      setStatus(`Feed error: ${j?.error || "unknown"}${d}`);
       return;
     }
     setFeed(j.rows || []);
@@ -64,7 +65,8 @@ export default function AdminClient() {
     });
     const j = await res.json().catch(() => null);
     if (!res.ok || !j?.ok) {
-      setStatus(`Seed failed: ${j?.error || "unknown"}`);
+      const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
+      setStatus(`Seed failed: ${j?.error || "unknown"}${d}`);
       return;
     }
     setStatus(`Seeded ${j.count} fighters.`);
@@ -88,7 +90,8 @@ export default function AdminClient() {
     });
     const j = await res.json().catch(() => null);
     if (!res.ok || !j?.ok) {
-      setStatus(`Create match failed: ${j?.error || "unknown"}`);
+      const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
+      setStatus(`Create match failed: ${j?.error || "unknown"}${d}`);
       return;
     }
     setStatus(`Created match ${j.id}`);

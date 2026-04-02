@@ -20,7 +20,11 @@ export async function GET() {
     .order("created_at", { ascending: false })
     .limit(25);
 
-  if (error) return NextResponse.json({ ok: false, error: "db_read_failed", detail: error.message }, { status: 500 });
+  if (error)
+    return NextResponse.json(
+      { ok: false, error: "db_read_failed", detail: { message: error.message, details: (error as any).details, hint: (error as any).hint, code: (error as any).code } },
+      { status: 500 }
+    );
 
   // Pool totals from bets (simulated)
   const matchIds = (matches || []).map((m: any) => m.id);
@@ -32,7 +36,11 @@ export async function GET() {
       .from("mfb_bets")
       .select("match_id, side, amount_usdc")
       .in("match_id", matchIds);
-    if (bErr) return NextResponse.json({ ok: false, error: "db_read_failed", detail: bErr.message }, { status: 500 });
+    if (bErr)
+      return NextResponse.json(
+        { ok: false, error: "db_read_failed", detail: { message: bErr.message, details: (bErr as any).details, hint: (bErr as any).hint, code: (bErr as any).code } },
+        { status: 500 }
+      );
     for (const b of bets || []) {
       const amt = Number((b as any).amount_usdc || 0);
       if (!pools[(b as any).match_id]) continue;

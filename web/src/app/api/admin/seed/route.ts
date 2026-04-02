@@ -44,7 +44,11 @@ export async function POST(req: Request) {
   }));
 
   const { error } = await sb.from("mfb_fighters").upsert(rows, { onConflict: "id" });
-  if (error) return NextResponse.json({ ok: false, error: "db_write_failed", detail: error.message }, { status: 500 });
+  if (error)
+    return NextResponse.json(
+      { ok: false, error: "db_write_failed", detail: { message: error.message, details: (error as any).details, hint: (error as any).hint, code: (error as any).code } },
+      { status: 500 }
+    );
 
   return NextResponse.json({ ok: true, count: rows.length });
 }
