@@ -41,6 +41,7 @@ export async function POST(req: Request) {
     palette: f.palette || [],
     signature_moves: f.signatureMoves || [],
     prompt_style: f.promptStyle || null,
+    attrs: f.attrs || {},
   }));
 
   const { error } = await sb.from("mfb_fighters").upsert(rows, { onConflict: "id" });

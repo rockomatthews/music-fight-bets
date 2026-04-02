@@ -80,7 +80,7 @@ export async function POST(req: Request) {
   const { data: matches, error } = await sb
     .from("mfb_matches")
     .select(
-      "id,status,opens_at,close_at,start_at,match_state,fighter_a_id,fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(attrs), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(attrs)"
+      "id,status,opens_at,close_at,start_at,match_state,fighter_a_id,fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name,archetype,prompt_style,attrs), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name,archetype,prompt_style,attrs)"
     )
     .neq("status", "resolved")
     .order("created_at", { ascending: false })
@@ -147,11 +147,26 @@ export async function POST(req: Request) {
           if (!already) {
             const aName = (m as any).fighterA?.stage_name || "Fighter A";
             const bName = (m as any).fighterB?.stage_name || "Fighter B";
-            const aStyle = (m as any).fighterA?.archetype || "";
-            const bStyle = (m as any).fighterB?.archetype || "";
+            const aStyle = (m as any).fighterA?.prompt_style || (m as any).fighterA?.archetype || "";
+            const bStyle = (m as any).fighterB?.prompt_style || (m as any).fighterB?.archetype || "";
+            const aAttrs = (m as any).fighterA?.attrs || {};
+            const bAttrs = (m as any).fighterB?.attrs || {};
             const winnerName = winner === "A" ? aName : bName;
 
-            const prompt = `Short boxing highlight reel in a stylized neon arena. Two original fictional fighters: ${aName} (${aStyle}) versus ${bName} (${bStyle}). They trade clean, dramatic punches and footwork. The sequence ends with ${winnerName} clearly winning (non-graphic), with crowd lights flaring. Cinematic handheld energy, high contrast, vibrant stage lighting, no logos, no real people, no copyrighted characters, no text on screen.`;
+            const aLook = `${aName} look: ${aAttrs.silhouette || ""}. Props: ${aAttrs.prop || ""}. Stage: ${aAttrs.stage_fx || ""}.`;
+            const bLook = `${bName} look: ${bAttrs.silhouette || ""}. Props: ${bAttrs.prop || ""}. Stage: ${bAttrs.stage_fx || ""}.`;
+
+            const prompt = `8-second cinematic music-arena boxing performance (non-graphic). Establishing walkout shot → close face-off → fast exchange → decisive moment. Two original fictional music-fighter archetypes: ${aName} (${aStyle}) vs ${bName} (${bStyle}).
+
+Make it unmistakably musician-coded:
+- Visible non-branded stage props (mic stands, amp stacks, cables, spotlights).
+- Each fighter carries their signature prop (non-weapon) during walkout and between exchanges.
+
+Fighter looks:
+- ${aLook}
+- ${bLook}
+
+End with ${winnerName} clearly winning (clean KO pose or referee stop, non-graphic). Vibrant concert lighting, smoke haze, dramatic crowd lights. No logos, no text, no real people, no copyrighted characters.`;
 
             const key = process.env.OPENAI_API_KEY;
             if (key) {

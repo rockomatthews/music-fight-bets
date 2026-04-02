@@ -9,7 +9,17 @@
       "genre": "baroque",
       "palette": ["#1a0f0a", "#d2b48c", "#8b0000"],
       "signatureMoves": ["Counterpoint Cross", "Harpsichord Hook", "Fugue Feint"],
-      "promptStyle": "ornate embroidered coat, powdered-wig silhouette, candlelit theater, gilded details"
+      "promptStyle": "ornate embroidered coat, powdered-wig silhouette, candlelit theater, gilded details",
+      "attrs": {
+        "silhouette": "powdered-wig silhouette, high-collar embroidered coat, lace cuffs",
+        "prop": "slim gold conductor baton (non-weapon), decorative sheet-music scroll",
+        "stage_fx": "candlelit opera stage, velvet curtains, warm spotlight, floating dust motes",
+        "power": 0.55,
+        "speed": 0.52,
+        "stamina": 0.60,
+        "chin": 0.48,
+        "ring_iq": 0.72
+      }
     },
     {
       "id": "nk_neonkeys",
@@ -18,7 +28,17 @@
       "genre": "synthwave",
       "palette": ["#00e5ff", "#ff00c8", "#101018"],
       "signatureMoves": ["Arp Uppercut", "Laser Lariat", "Chorus Crash"],
-      "promptStyle": "retro-futuristic stage, neon rim light, reflective jacket, haze, analog vibes"
+      "promptStyle": "retro-futuristic stage, neon rim light, reflective jacket, haze, analog vibes",
+      "attrs": {
+        "silhouette": "neon visor, reflective bomber jacket, glowing trim",
+        "prop": "keytar-shaped prop (no logos), coiled audio cable, LED wrist bands",
+        "stage_fx": "neon grid floor, laser haze, synthwave lighting, magenta/cyan rim light",
+        "power": 0.50,
+        "speed": 0.68,
+        "stamina": 0.55,
+        "chin": 0.46,
+        "ring_iq": 0.58
+      }
     },
     {
       "id": "ig_iron_lick",
