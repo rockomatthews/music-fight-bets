@@ -41,6 +41,7 @@ export async function POST(req: Request) {
     palette: f.palette || [],
     signature_moves: f.signatureMoves || [],
     prompt_style: f.promptStyle || null,
+    avatar_url: f.avatarUrl || null,
     attrs: f.attrs || {},
   }));
 

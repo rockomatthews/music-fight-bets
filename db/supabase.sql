@@ -11,6 +11,7 @@ create table if not exists public.mfb_fighters (
   palette jsonb not null default '[]'::jsonb,
   signature_moves jsonb not null default '[]'::jsonb,
   prompt_style text,
+  avatar_url text,
   attrs jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
 );

@@ -10,6 +10,7 @@
       "palette": ["#1a0f0a", "#d2b48c", "#8b0000"],
       "signatureMoves": ["Counterpoint Cross", "Harpsichord Hook", "Fugue Feint"],
       "promptStyle": "ornate embroidered coat, powdered-wig silhouette, candlelit theater, gilded details",
+      "avatarUrl": "/fighters/vf_barogue.jpg",
       "attrs": {
         "silhouette": "powdered-wig silhouette, high-collar embroidered coat, lace cuffs",
         "prop": "slim gold conductor baton (non-weapon), decorative sheet-music scroll",
@@ -29,6 +30,7 @@
       "palette": ["#00e5ff", "#ff00c8", "#101018"],
       "signatureMoves": ["Arp Uppercut", "Laser Lariat", "Chorus Crash"],
       "promptStyle": "retro-futuristic stage, neon rim light, reflective jacket, haze, analog vibes",
+      "avatarUrl": "/fighters/nk_neonkeys.jpg",
       "attrs": {
         "silhouette": "neon visor, reflective bomber jacket, glowing trim",
         "prop": "keytar-shaped prop (no logos), coiled audio cable, LED wrist bands",

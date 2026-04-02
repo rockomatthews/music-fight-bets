@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
@@ -14,8 +15,8 @@ type FeedRow = {
   startAt: string;
   resolvedWinner: "A" | "B" | null;
   resolvedMeta: any;
-  fighterA: { id: string; name: string; archetype?: string };
-  fighterB: { id: string; name: string; archetype?: string };
+  fighterA: { id: string; name: string; archetype?: string; avatarUrl?: string | null };
+  fighterB: { id: string; name: string; archetype?: string; avatarUrl?: string | null };
   poolA: number;
   poolB: number;
 };
@@ -99,9 +100,25 @@ export default function FeedClient() {
             <CardContent>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ sm: "center" }}>
                 <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontWeight: 950, fontSize: 18 }}>
-                    {m.fighterA.name} vs {m.fighterB.name}
-                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.2 }}>
+                    <Image
+                      src={m.fighterA.avatarUrl || `https://api.dicebear.com/7.x/bottts/png?seed=${encodeURIComponent(m.fighterA.id)}&backgroundColor=070712&radius=16&size=64`}
+                      alt={m.fighterA.name}
+                      width={36}
+                      height={36}
+                      style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.10)" }}
+                    />
+                    <Typography sx={{ fontWeight: 950, fontSize: 18 }}>
+                      {m.fighterA.name} vs {m.fighterB.name}
+                    </Typography>
+                    <Image
+                      src={m.fighterB.avatarUrl || `https://api.dicebear.com/7.x/bottts/png?seed=${encodeURIComponent(m.fighterB.id)}&backgroundColor=070712&radius=16&size=64`}
+                      alt={m.fighterB.name}
+                      width={36}
+                      height={36}
+                      style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.10)" }}
+                    />
+                  </Box>
                   <Typography sx={{ opacity: 0.75, mt: 0.5 }}>
                     Pools: A {m.poolA.toFixed(2)} / B {m.poolB.toFixed(2)} • implied odds A {(odds.a * 100).toFixed(0)}% / B {(odds.b * 100).toFixed(0)}%
                   </Typography>
