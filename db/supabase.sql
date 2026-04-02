@@ -11,6 +11,7 @@ create table if not exists public.mfb_fighters (
   palette jsonb not null default '[]'::jsonb,
   signature_moves jsonb not null default '[]'::jsonb,
   prompt_style text,
+  attrs jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
 );
 
@@ -23,11 +24,16 @@ create table if not exists public.mfb_matches (
   fighter_a_id text not null references public.mfb_fighters(id),
   fighter_b_id text not null references public.mfb_fighters(id),
 
-  status text not null default 'open', -- open | closed | resolved
+  status text not null default 'scheduled', -- scheduled | open | closed | resolved
+  opens_at timestamptz not null default now(),
   close_at timestamptz not null,
+  start_at timestamptz not null,
+
+  match_state jsonb not null default '{}'::jsonb,
 
   resolved_winner text, -- 'A' | 'B'
   resolved_tx text,
+  resolved_meta jsonb,
 
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

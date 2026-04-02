@@ -10,7 +10,16 @@ const BodySchema = z
   .object({
     fighterAId: z.string().min(2),
     fighterBId: z.string().min(2),
+
+    // convenience scheduling
+    opensInMinutes: z.number().int().min(0).max(24 * 60).default(0),
     closeInMinutes: z.number().int().min(1).max(24 * 60).default(60),
+    startInMinutes: z.number().int().min(1).max(24 * 60).default(65),
+
+    // optional direct timestamps
+    opensAt: z.string().datetime().optional(),
+    closeAt: z.string().datetime().optional(),
+    startAt: z.string().datetime().optional(),
   })
   .strict();
 
@@ -47,7 +56,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "same_fighter" }, { status: 400 });
   }
 
-  const closeAt = new Date(Date.now() + body.data.closeInMinutes * 60_000).toISOString();
+  const now = Date.now();
+
+  const opensAt = body.data.opensAt
+    ? new Date(body.data.opensAt).toISOString()
+    : new Date(now + body.data.opensInMinutes * 60_000).toISOString();
+  const closeAt = body.data.closeAt
+    ? new Date(body.data.closeAt).toISOString()
+    : new Date(now + body.data.closeInMinutes * 60_000).toISOString();
+  const startAt = body.data.startAt
+    ? new Date(body.data.startAt).toISOString()
+    : new Date(now + body.data.startInMinutes * 60_000).toISOString();
+
+  if (new Date(closeAt).getTime() <= new Date(opensAt).getTime()) {
+    return NextResponse.json({ ok: false, error: "bad_schedule" }, { status: 400 });
+  }
+  if (new Date(startAt).getTime() < new Date(closeAt).getTime()) {
+    return NextResponse.json({ ok: false, error: "bad_schedule_start_before_close" }, { status: 400 });
+  }
+
+  // Seed some match-state vars (can be edited later)
+  const rand = (min: number, max: number) => Math.round((min + Math.random() * (max - min)) * 10) / 10;
+  const match_state = {
+    a: { sleep_hours: rand(5.5, 9.0), days_since_last_fight: Math.round(rand(2, 28)), injury_pct: rand(0, 18) },
+    b: { sleep_hours: rand(5.5, 9.0), days_since_last_fight: Math.round(rand(2, 28)), injury_pct: rand(0, 18) },
+  };
+
   const id = makeId();
 
   const { error } = await sb.from("mfb_matches").insert({
@@ -57,8 +91,11 @@ export async function POST(req: Request) {
     match_index: 0,
     fighter_a_id: body.data.fighterAId,
     fighter_b_id: body.data.fighterBId,
-    status: "open",
+    status: "scheduled",
+    opens_at: opensAt,
     close_at: closeAt,
+    start_at: startAt,
+    match_state,
   } as any);
 
   if (error)

@@ -16,7 +16,7 @@ export async function GET() {
     .from("mfb_matches")
     // Alias the two joins so PostgREST doesn't collide table names
     .select(
-      "id, status, close_at, fighter_a_id, fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name, archetype), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name, archetype)"
+      "id, status, opens_at, close_at, start_at, resolved_winner, resolved_meta, fighter_a_id, fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name, archetype), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name, archetype)"
     )
     .order("created_at", { ascending: false })
     .limit(25);
@@ -56,7 +56,11 @@ export async function GET() {
     return {
       id: m.id,
       status: m.status,
+      opensAt: m.opens_at,
       closeAt: m.close_at,
+      startAt: m.start_at,
+      resolvedWinner: m.resolved_winner || null,
+      resolvedMeta: m.resolved_meta || null,
       fighterA: { id: m.fighter_a_id, name: a, archetype: m.fighterA?.archetype },
       fighterB: { id: m.fighter_b_id, name: b, archetype: m.fighterB?.archetype },
       poolA: pools[m.id]?.a || 0,

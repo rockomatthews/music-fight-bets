@@ -40,7 +40,9 @@ export default function AdminClient() {
 
   const [fighterAId, setFighterAId] = useState("vf_barogue");
   const [fighterBId, setFighterBId] = useState("nk_neonkeys");
-  const [closeInMinutes, setCloseInMinutes] = useState("60");
+  const [opensInMinutes, setOpensInMinutes] = useState("0");
+  const [closeInMinutes, setCloseInMinutes] = useState("10");
+  const [startInMinutes, setStartInMinutes] = useState("12");
 
   const headerSecret = useMemo(() => secret.trim(), [secret]);
 
@@ -73,9 +75,19 @@ export default function AdminClient() {
   }
 
   async function createMatch() {
+    const o = Number(opensInMinutes);
     const c = Number(closeInMinutes);
+    const s = Number(startInMinutes);
+    if (!Number.isFinite(o) || o < 0) {
+      setStatus("Bad opensInMinutes");
+      return;
+    }
     if (!Number.isFinite(c) || c <= 0) {
       setStatus("Bad closeInMinutes");
+      return;
+    }
+    if (!Number.isFinite(s) || s <= 0) {
+      setStatus("Bad startInMinutes");
       return;
     }
 
@@ -86,7 +98,7 @@ export default function AdminClient() {
         "Content-Type": "application/json",
         "x-admin-secret": headerSecret,
       },
-      body: JSON.stringify({ fighterAId, fighterBId, closeInMinutes: c }),
+      body: JSON.stringify({ fighterAId, fighterBId, opensInMinutes: o, closeInMinutes: c, startInMinutes: s }),
     });
     const j = await res.json().catch(() => null);
     if (!res.ok || !j?.ok) {
@@ -170,16 +182,30 @@ export default function AdminClient() {
             </Stack>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ sm: "center" }}>
               <TextField
-                label="Close in minutes"
+                label="Opens in (min)"
+                value={opensInMinutes}
+                onChange={(e) => setOpensInMinutes(e.target.value)}
+                size="small"
+                sx={{ width: 160 }}
+              />
+              <TextField
+                label="Closes in (min)"
                 value={closeInMinutes}
                 onChange={(e) => setCloseInMinutes(e.target.value)}
                 size="small"
-                sx={{ width: 200 }}
+                sx={{ width: 160 }}
+              />
+              <TextField
+                label="Fight in (min)"
+                value={startInMinutes}
+                onChange={(e) => setStartInMinutes(e.target.value)}
+                size="small"
+                sx={{ width: 160 }}
               />
               <Button variant="contained" onClick={createMatch}>Create</Button>
             </Stack>
             <Typography sx={{ opacity: 0.65, fontSize: 12 }}>
-              Scheduling (opens_at/start_at) is next.
+              Scheduled matches auto-transition via “Resolve due fights”.
             </Typography>
           </Stack>
         </CardContent>
@@ -196,6 +222,26 @@ export default function AdminClient() {
                 From /api/feed
               </Typography>
             </Box>
+            <Button
+              variant="outlined"
+              onClick={async () => {
+                setStatus("Resolving due fights...");
+                const res = await fetch("/api/admin/match/resolve_due", {
+                  method: "POST",
+                  headers: { "x-admin-secret": headerSecret },
+                });
+                const j = await res.json().catch(() => null);
+                if (!res.ok || !j?.ok) {
+                  const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
+                  setStatus(`Resolve failed: ${j?.error || "unknown"}${d}`);
+                  return;
+                }
+                setStatus(`Resolve ok. changed=${j.changed} resolved=${j.resolved}`);
+                await loadFeed();
+              }}
+            >
+              Resolve due fights
+            </Button>
           </Stack>
           <Divider sx={{ my: 1.5, opacity: 0.2 }} />
           <Stack spacing={1.2}>

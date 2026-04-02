@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
@@ -8,7 +9,11 @@ import { getSessionId } from "./_session";
 type FeedRow = {
   id: string;
   status: string;
+  opensAt: string;
   closeAt: string;
+  startAt: string;
+  resolvedWinner: "A" | "B" | null;
+  resolvedMeta: any;
   fighterA: { id: string; name: string; archetype?: string };
   fighterB: { id: string; name: string; archetype?: string };
   poolA: number;
@@ -101,7 +106,7 @@ export default function FeedClient() {
                     Pools: A {m.poolA.toFixed(2)} / B {m.poolB.toFixed(2)} • implied odds A {(odds.a * 100).toFixed(0)}% / B {(odds.b * 100).toFixed(0)}%
                   </Typography>
                   <Typography sx={{ opacity: 0.6, mt: 0.25, fontSize: 12 }}>
-                    closes {new Date(m.closeAt).toLocaleString()}
+                    opens {new Date(m.opensAt).toLocaleString()} • closes {new Date(m.closeAt).toLocaleString()} • fights {new Date(m.startAt).toLocaleString()}
                   </Typography>
                 </Box>
 
@@ -112,9 +117,15 @@ export default function FeedClient() {
                 </Stack>
               </Stack>
               <Divider sx={{ mt: 2, opacity: 0.2 }} />
-              <Typography sx={{ opacity: 0.65, mt: 1, fontSize: 12 }}>
-                v1 payout is simulated (no claims yet). We’ll add match resolution + payouts next.
-              </Typography>
+              {m.status === "resolved" && m.resolvedWinner ? (
+                <Typography sx={{ opacity: 0.9, mt: 1, fontSize: 12 }}>
+                  Winner: <b>{m.resolvedWinner === "A" ? m.fighterA.name : m.fighterB.name}</b> • prob(A) {m.resolvedMeta?.probA != null ? `${Math.round(m.resolvedMeta.probA * 100)}%` : "n/a"}
+                </Typography>
+              ) : (
+                <Typography sx={{ opacity: 0.65, mt: 1, fontSize: 12 }}>
+                  Resolve via Admin → “Resolve due fights” (sim). Real USDC claims later.
+                </Typography>
+              )}
             </CardContent>
           </Card>
         );
