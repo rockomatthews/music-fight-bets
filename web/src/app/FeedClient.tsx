@@ -4,7 +4,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Stack,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { getSessionId } from "./_session";
 
 type FeedRow = {
@@ -30,6 +45,11 @@ function impliedOdds(a: number, b: number) {
 export default function FeedClient() {
   const [rows, setRows] = useState<FeedRow[]>([]);
   const [status, setStatus] = useState<string>("");
+
+  const [tab, setTab] = useState<"open" | "closed">("open");
+
+  const [betOpen, setBetOpen] = useState(false);
+  const [betMatch, setBetMatch] = useState<null | { id: string; side: "A" | "B"; label: string }>(null);
   const [betAmt, setBetAmt] = useState("5");
 
   const sessionId = useMemo(() => getSessionId(), []);
@@ -46,20 +66,32 @@ export default function FeedClient() {
     setStatus("");
   }
 
-  async function bet(matchId: string, side: "A" | "B") {
+  function openBet(matchId: string, side: "A" | "B", label: string) {
+    setBetMatch({ id: matchId, side, label });
+    setBetOpen(true);
+  }
+
+  async function confirmBet() {
+    if (!betMatch) return;
     const amountUsdc = Number(betAmt);
-    if (!Number.isFinite(amountUsdc) || amountUsdc <= 0) return;
+    if (!Number.isFinite(amountUsdc) || amountUsdc <= 0) {
+      setStatus("Enter a bet amount");
+      return;
+    }
 
     const res = await fetch("/api/bet", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ matchId, side, amountUsdc, sessionId }),
+      body: JSON.stringify({ matchId: betMatch.id, side: betMatch.side, amountUsdc, sessionId }),
     });
     const j = await res.json().catch(() => null);
     if (!res.ok || !j?.ok) {
       setStatus(`Bet failed: ${j?.error || "unknown"}`);
       return;
     }
+
+    setBetOpen(false);
+    setBetMatch(null);
     await load();
   }
 
@@ -82,18 +114,28 @@ export default function FeedClient() {
       <Card>
         <CardContent>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} alignItems={{ sm: "center" }}>
-            <Typography sx={{ fontWeight: 950 }}>Bet amount (USDC)</Typography>
-            <TextField value={betAmt} onChange={(e) => setBetAmt(e.target.value)} size="small" sx={{ width: 140 }} />
-            <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
-              Uses your local sessionId (anonymous) for now.
-            </Typography>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontWeight: 950 }}>Feed</Typography>
+              <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
+                Open fights are bettable. Closed fights show results + video.
+              </Typography>
+            </Box>
+            <Tabs value={tab} onChange={(_e, v) => setTab(v)}>
+              <Tab value="open" label="Open fights" />
+              <Tab value="closed" label="Closed fights" />
+            </Tabs>
           </Stack>
         </CardContent>
       </Card>
 
       {status ? <Typography sx={{ opacity: 0.85 }}>{status}</Typography> : null}
 
-      {rows.map((m) => {
+      {rows
+        .filter((m) => {
+          const isClosed = m.status === "resolved" || m.status === "closed";
+          return tab === "open" ? !isClosed : isClosed;
+        })
+        .map((m) => {
         const odds = impliedOdds(m.poolA, m.poolB);
         return (
           <Card key={m.id}>
@@ -128,11 +170,24 @@ export default function FeedClient() {
                 </Box>
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
-                  <Button variant="contained" onClick={() => bet(m.id, "A")}>Bet {m.fighterA.name}</Button>
-                  <Button variant="contained" color="success" onClick={() => bet(m.id, "B")} sx={{ color: "#fff" }}>
-                    Bet {m.fighterB.name}
+                  {m.status === "open" || m.status === "scheduled" ? (
+                    <>
+                      <Button variant="contained" onClick={() => openBet(m.id, "A", m.fighterA.name)}>
+                        Bet {m.fighterA.name}
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => openBet(m.id, "B", m.fighterB.name)}
+                        sx={{ color: "#fff" }}
+                      >
+                        Bet {m.fighterB.name}
+                      </Button>
+                    </>
+                  ) : null}
+                  <Button component={Link} href={`/match/${m.id}`} color="inherit">
+                    View
                   </Button>
-                  <Button component={Link} href={`/match/${m.id}`} color="inherit">View</Button>
                 </Stack>
               </Stack>
               <Divider sx={{ mt: 2, opacity: 0.2 }} />
@@ -140,9 +195,13 @@ export default function FeedClient() {
                 <Typography sx={{ opacity: 0.9, mt: 1, fontSize: 12 }}>
                   Winner: <b>{m.resolvedWinner === "A" ? m.fighterA.name : m.fighterB.name}</b> • prob(A) {m.resolvedMeta?.probA != null ? `${Math.round(m.resolvedMeta.probA * 100)}%` : "n/a"}
                 </Typography>
+              ) : m.status === "closed" ? (
+                <Typography sx={{ opacity: 0.75, mt: 1, fontSize: 12 }}>
+                  Betting closed — fight starting soon.
+                </Typography>
               ) : (
                 <Typography sx={{ opacity: 0.65, mt: 1, fontSize: 12 }}>
-                  Resolve via Admin → “Resolve due fights” (sim). Real USDC claims later.
+                  Scheduled/open fight.
                 </Typography>
               )}
             </CardContent>
@@ -151,6 +210,31 @@ export default function FeedClient() {
       })}
 
       {!rows.length && !status ? <Typography sx={{ opacity: 0.8 }}>No matches yet. Seed fighters + create a match.</Typography> : null}
+
+      <Dialog open={betOpen} onClose={() => setBetOpen(false)} fullWidth maxWidth="xs">
+        <DialogTitle>Place bet</DialogTitle>
+        <DialogContent>
+          <Stack spacing={1.25} sx={{ pt: 1 }}>
+            <Typography sx={{ opacity: 0.8 }}>
+              Betting on: <b>{betMatch?.label}</b>
+            </Typography>
+            <TextField
+              label="Amount (USDC)"
+              value={betAmt}
+              onChange={(e) => setBetAmt(e.target.value)}
+              inputMode="decimal"
+              autoFocus
+            />
+            <Typography sx={{ opacity: 0.65, fontSize: 12 }}>
+              Simulated for now. Wallet/USDC comes next.
+            </Typography>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setBetOpen(false)} color="inherit">Cancel</Button>
+          <Button onClick={confirmBet} variant="contained">Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </Stack>
   );
 }
