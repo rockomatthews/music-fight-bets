@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 
-const PREVIEW_MATCH_ID = "m_93d453835df54d8c9fce9a20b107471c";
+// preview is pinned in mfb_site_config (key='preview')
 
 export default function HomeClient() {
   const [videoId, setVideoId] = useState<string | null>(null);
@@ -13,13 +13,16 @@ export default function HomeClient() {
 
   async function load() {
     setStatus("Loading preview...");
-    const res = await fetch(`/api/match/${encodeURIComponent(PREVIEW_MATCH_ID)}`);
+
+    // Prefer pinned site preview
+    const res = await fetch(`/api/site/preview`);
     const j = await res.json().catch(() => null);
     if (!res.ok || !j?.ok) {
       setStatus(`Preview error: ${j?.error || "unknown"}`);
       return;
     }
-    const vid = j?.render?.video_id as string | undefined;
+
+    const vid = j?.videoId as string | undefined;
     if (!vid) {
       setStatus("Preview not ready yet.");
       setVideoId(null);
@@ -63,7 +66,7 @@ export default function HomeClient() {
       </Box>
 
       <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
-        Preview match <Link href={`/match/${PREVIEW_MATCH_ID}`}>{PREVIEW_MATCH_ID}</Link>
+        Preview clip (pinned). Want a different one? Generate a new preview in Admin.
       </Typography>
 
       <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>

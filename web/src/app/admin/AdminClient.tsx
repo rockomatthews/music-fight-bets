@@ -162,6 +162,42 @@ export default function AdminClient() {
 
       <Card>
         <CardContent>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ sm: "center" }}>
+            <Box sx={{ flex: 1 }}>
+              <Typography sx={{ fontWeight: 950 }}>Generate new home preview clip</Typography>
+              <Typography sx={{ opacity: 0.75, fontSize: 13 }}>
+                Creates a fresh 8s Sora clip using two fighters’ look bibles and pins it to /home.
+              </Typography>
+            </Box>
+            <Button
+              variant="outlined"
+              onClick={async () => {
+                setStatus("Generating preview...");
+                const res = await fetch("/api/admin/preview/generate", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-secret": headerSecret,
+                  },
+                  body: JSON.stringify({ fighterAId, fighterBId }),
+                });
+                const j = await res.json().catch(() => null);
+                if (!res.ok || !j?.ok) {
+                  const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
+                  setStatus(`Preview generate failed: ${j?.error || "unknown"}${d}`);
+                  return;
+                }
+                setStatus(`Preview started: ${j.video.id} (${j.video.status})`);
+              }}
+            >
+              Generate
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
           <Stack spacing={1.2}>
             <Typography sx={{ fontWeight: 950 }}>Create match</Typography>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
