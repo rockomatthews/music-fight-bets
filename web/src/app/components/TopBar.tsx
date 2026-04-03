@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { ConnectButton } from "./ConnectButton";
 
 export function TopBar() {
   return (
@@ -8,8 +10,16 @@ export function TopBar() {
         <AppBar position="static" color="transparent" elevation={0}>
           <Toolbar disableGutters sx={{ display: "flex", gap: 1.5 }}>
             <Box sx={{ flex: 1, display: "flex", alignItems: "center", gap: 1.5 }}>
+              <Image
+                src="/logo.png"
+                alt="Music Fights"
+                width={34}
+                height={34}
+                style={{ borderRadius: 12, border: "1px solid rgba(255,255,255,0.14)" }}
+                priority
+              />
               <Typography variant="h6" sx={{ fontWeight: 950, letterSpacing: -0.4 }}>
-                Music Fight Bets
+                Music Fights
               </Typography>
               <Typography sx={{ opacity: 0.7, fontSize: 13 }}>
                 USDC on Base • provably-fair
@@ -25,6 +35,7 @@ export function TopBar() {
             <Button component={Link} href="/admin" color="inherit" sx={{ opacity: 0.75 }}>
               Admin
             </Button>
+            <ConnectButton />
           </Toolbar>
         </AppBar>
       </div>
