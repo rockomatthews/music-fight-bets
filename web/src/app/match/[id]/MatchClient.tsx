@@ -83,44 +83,58 @@ export default function MatchClient({ id }: { id: string }) {
       <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} alignItems={{ sm: "center" }}>
         <Box sx={{ flex: 1 }}>
           <Typography variant="h4">{m.fighterA.name} vs {m.fighterB.name}</Typography>
-          <Typography sx={{ opacity: 0.75 }}>Simulated betting (v1)</Typography>
+          <Typography sx={{ opacity: 0.75 }}>
+            {m.status === "resolved" ? "Fight over" : m.status === "closed" ? "Betting closed" : "Betting live"}
+          </Typography>
         </Box>
         <Button variant="outlined" onClick={load}>Refresh</Button>
       </Stack>
 
       <Card>
         <CardContent>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} alignItems={{ sm: "center" }}>
-            <Typography sx={{ fontWeight: 950 }}>Bet amount (USDC)</Typography>
-            <TextField value={betAmt} onChange={(e) => setBetAmt(e.target.value)} size="small" sx={{ width: 140 }} />
-            <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
-              closes {new Date(m.closeAt).toLocaleString()}
+          {m.status === "open" || m.status === "scheduled" ? (
+            <>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} alignItems={{ sm: "center" }}>
+                <Typography sx={{ fontWeight: 950 }}>Bet amount (USDC)</Typography>
+                <TextField value={betAmt} onChange={(e) => setBetAmt(e.target.value)} size="small" sx={{ width: 140 }} />
+                <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
+                  closes {new Date(m.closeAt).toLocaleString()}
+                </Typography>
+              </Stack>
+
+              <Divider sx={{ my: 2, opacity: 0.2 }} />
+
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ sm: "center" }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography sx={{ fontWeight: 950, fontSize: 18 }}>{m.fighterA.name}</Typography>
+                  <Typography sx={{ opacity: 0.75 }}>{m.fighterA.archetype}</Typography>
+                  <Typography sx={{ opacity: 0.75, mt: 0.5 }}>Pool: {m.poolA.toFixed(2)}</Typography>
+                </Box>
+                <Button variant="contained" size="large" onClick={() => bet("A")}>Bet A</Button>
+              </Stack>
+
+              <Divider sx={{ my: 2, opacity: 0.2 }} />
+
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ sm: "center" }}>
+                <Box sx={{ flex: 1 }}>
+                  <Typography sx={{ fontWeight: 950, fontSize: 18 }}>{m.fighterB.name}</Typography>
+                  <Typography sx={{ opacity: 0.75 }}>{m.fighterB.archetype}</Typography>
+                  <Typography sx={{ opacity: 0.75, mt: 0.5 }}>Pool: {m.poolB.toFixed(2)}</Typography>
+                </Box>
+                <Button variant="contained" color="success" size="large" onClick={() => bet("B")} sx={{ color: "#fff" }}>
+                  Bet B
+                </Button>
+              </Stack>
+            </>
+          ) : m.status === "closed" ? (
+            <Typography sx={{ opacity: 0.8 }}>
+              Betting is closed. Fight starting soon.
             </Typography>
-          </Stack>
-
-          <Divider sx={{ my: 2, opacity: 0.2 }} />
-
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ sm: "center" }}>
-            <Box sx={{ flex: 1 }}>
-              <Typography sx={{ fontWeight: 950, fontSize: 18 }}>{m.fighterA.name}</Typography>
-              <Typography sx={{ opacity: 0.75 }}>{m.fighterA.archetype}</Typography>
-              <Typography sx={{ opacity: 0.75, mt: 0.5 }}>Pool: {m.poolA.toFixed(2)}</Typography>
-            </Box>
-            <Button variant="contained" size="large" onClick={() => bet("A")}>Bet A</Button>
-          </Stack>
-
-          <Divider sx={{ my: 2, opacity: 0.2 }} />
-
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ sm: "center" }}>
-            <Box sx={{ flex: 1 }}>
-              <Typography sx={{ fontWeight: 950, fontSize: 18 }}>{m.fighterB.name}</Typography>
-              <Typography sx={{ opacity: 0.75 }}>{m.fighterB.archetype}</Typography>
-              <Typography sx={{ opacity: 0.75, mt: 0.5 }}>Pool: {m.poolB.toFixed(2)}</Typography>
-            </Box>
-            <Button variant="contained" color="success" size="large" onClick={() => bet("B")} sx={{ color: "#fff" }}>
-              Bet B
-            </Button>
-          </Stack>
+          ) : (
+            <Typography sx={{ opacity: 0.8 }}>
+              Fight over.
+            </Typography>
+          )}
 
           {status ? <Typography sx={{ opacity: 0.8, mt: 2 }}>{status}</Typography> : null}
         </CardContent>

@@ -35,6 +35,16 @@ export function TopBar() {
             <Button component={Link} href="/fighters" color="inherit" sx={{ opacity: 0.9 }}>
               Fighters
             </Button>
+            <Button
+              component={Link}
+              href="https://www.coinbase.com/buy/usdc"
+              target="_blank"
+              rel="noreferrer"
+              variant="outlined"
+              sx={{ opacity: 0.95 }}
+            >
+              Add funds
+            </Button>
             <Button component={Link} href="/admin" color="inherit" sx={{ opacity: 0.75 }}>
               Admin
             </Button>
