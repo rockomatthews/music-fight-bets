@@ -1,58 +1,14 @@
-import Link from "next/link";
-import { Box, Button, Card, CardContent, Stack, Typography } from "@mui/material";
 import { TopBar } from "../components/TopBar";
+import HomeClient from "./HomeClient";
 
 export const dynamic = "force-dynamic";
-
-const PREVIEW_MATCH_ID = "m_93d453835df54d8c9fce9a20b107471c";
 
 export default function HomeSplash() {
   return (
     <>
       <TopBar />
       <div className="mfbWrap">
-        <Stack spacing={2.2} sx={{ mt: 1 }}>
-          <Stack spacing={0.75}>
-            <Typography variant="h2">Music Fights</Typography>
-            <Typography sx={{ opacity: 0.78, maxWidth: 780 }}>
-              Pick a side. Bet USDC on Base. Winners get paid. Each matchup gets a cinematic AI fight clip.
-              (Fighters are original characters — no real people.)
-            </Typography>
-          </Stack>
-
-          <Box sx={{ borderRadius: 0, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)" }}>
-            <video
-              controls
-              playsInline
-              preload="metadata"
-              style={{ width: "100%", display: "block" }}
-              src={`/api/match/${PREVIEW_MATCH_ID}/preview.mp4`}
-            />
-          </Box>
-
-          <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
-            Preview match <Link href={`/match/${PREVIEW_MATCH_ID}`}>{PREVIEW_MATCH_ID}</Link>
-          </Typography>
-
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
-            <Button component={Link} href="/" variant="contained" size="large">
-              Enter Feed
-            </Button>
-            {/* video above is the full match */}
-          </Stack>
-
-          <Card>
-            <CardContent>
-              <Typography sx={{ fontWeight: 950, mb: 0.75 }}>How it works</Typography>
-              <Stack spacing={0.6}>
-                <Typography sx={{ opacity: 0.78 }}>1) Fights are scheduled (betting window opens/closes).</Typography>
-                <Typography sx={{ opacity: 0.78 }}>2) You bet on Fighter A or Fighter B.</Typography>
-                <Typography sx={{ opacity: 0.78 }}>3) The fight resolves and the winner is posted.</Typography>
-                <Typography sx={{ opacity: 0.78 }}>4) A highlight clip is generated for the match.</Typography>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Stack>
+        <HomeClient />
       </div>
     </>
   );
