@@ -13,9 +13,9 @@ export function TopBar() {
               <Image
                 src="/logo.png"
                 alt="Music Fights"
-                width={34}
-                height={34}
-                style={{ borderRadius: 12, border: "1px solid rgba(255,255,255,0.14)" }}
+                width={44}
+                height={44}
+                style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)" }}
                 priority
               />
               <Typography variant="h6" sx={{ fontWeight: 950, letterSpacing: -0.4 }}>

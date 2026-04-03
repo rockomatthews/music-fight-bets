@@ -20,33 +20,25 @@ export default function HomeSplash() {
             </Typography>
           </Stack>
 
-          <Card>
-            <CardContent>
-              <Stack spacing={1.2}>
-                <Typography sx={{ fontWeight: 950 }}>What it looks like</Typography>
-                <Box sx={{ borderRadius: 3, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)" }}>
-                  <video
-                    controls
-                    playsInline
-                    preload="metadata"
-                    style={{ width: "100%", display: "block" }}
-                    src={`/api/match/${PREVIEW_MATCH_ID}/preview.mp4`}
-                  />
-                </Box>
-                <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
-                  Preview from match <Link href={`/match/${PREVIEW_MATCH_ID}`}>{PREVIEW_MATCH_ID}</Link>
-                </Typography>
-              </Stack>
-            </CardContent>
-          </Card>
+          <Box sx={{ borderRadius: 4, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)" }}>
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              style={{ width: "100%", display: "block" }}
+              src={`/api/match/${PREVIEW_MATCH_ID}/preview.mp4`}
+            />
+          </Box>
+
+          <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
+            Preview match <Link href={`/match/${PREVIEW_MATCH_ID}`}>{PREVIEW_MATCH_ID}</Link>
+          </Typography>
 
           <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
             <Button component={Link} href="/" variant="contained" size="large">
               Enter Feed
             </Button>
-            <Button component={Link} href={`/match/${PREVIEW_MATCH_ID}`} variant="outlined" size="large">
-              Watch full match
-            </Button>
+            {/* video above is the full match */}
           </Stack>
 
           <Card>
