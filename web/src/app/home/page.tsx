@@ -20,7 +20,7 @@ export default function HomeSplash() {
             </Typography>
           </Stack>
 
-          <Box sx={{ borderRadius: 4, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)" }}>
+          <Box sx={{ borderRadius: 0, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)" }}>
             <video
               controls
               playsInline
