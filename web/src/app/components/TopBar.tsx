@@ -26,6 +26,9 @@ export function TopBar() {
               </Typography>
             </Box>
 
+            <Button component={Link} href="/home" color="inherit" sx={{ opacity: 0.9 }}>
+              Home
+            </Button>
             <Button component={Link} href="/" color="inherit" sx={{ opacity: 0.9 }}>
               Feed
             </Button>
