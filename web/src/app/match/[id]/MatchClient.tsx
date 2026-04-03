@@ -2,7 +2,20 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { getSessionId } from "../../_session";
 
 type MatchRow = {
@@ -19,6 +32,8 @@ export default function MatchClient({ id }: { id: string }) {
   const [m, setM] = useState<MatchRow | null>(null);
   const [status, setStatus] = useState<string>("");
   const [betAmt, setBetAmt] = useState("5");
+  const [betOpen, setBetOpen] = useState(false);
+  const [betSide, setBetSide] = useState<"A" | "B" | null>(null);
   const sessionId = useMemo(() => getSessionId(), []);
 
   const [render, setRender] = useState<{ status: string; video_id: string } | null>(null);
@@ -47,20 +62,32 @@ export default function MatchClient({ id }: { id: string }) {
     setStatus("");
   }
 
-  async function bet(side: "A" | "B") {
+  function openBet(side: "A" | "B") {
+    setBetSide(side);
+    setBetOpen(true);
+  }
+
+  async function confirmBet() {
+    if (!betSide) return;
     const amountUsdc = Number(betAmt);
-    if (!Number.isFinite(amountUsdc) || amountUsdc <= 0) return;
+    if (!Number.isFinite(amountUsdc) || amountUsdc <= 0) {
+      setStatus("Enter a bet amount");
+      return;
+    }
 
     const res = await fetch("/api/bet", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ matchId: id, side, amountUsdc, sessionId }),
+      body: JSON.stringify({ matchId: id, side: betSide, amountUsdc, sessionId }),
     });
     const j = await res.json().catch(() => null);
     if (!res.ok || !j?.ok) {
       setStatus(`Bet failed: ${j?.error || "unknown"}`);
       return;
     }
+
+    setBetOpen(false);
+    setBetSide(null);
     await load();
   }
 
@@ -94,13 +121,9 @@ export default function MatchClient({ id }: { id: string }) {
         <CardContent>
           {m.status === "open" || m.status === "scheduled" ? (
             <>
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} alignItems={{ sm: "center" }}>
-                <Typography sx={{ fontWeight: 950 }}>Bet amount (USDC)</Typography>
-                <TextField value={betAmt} onChange={(e) => setBetAmt(e.target.value)} size="small" sx={{ width: 140 }} />
-                <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
-                  closes {new Date(m.closeAt).toLocaleString()}
-                </Typography>
-              </Stack>
+              <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
+                closes {new Date(m.closeAt).toLocaleString()}
+              </Typography>
 
               <Divider sx={{ my: 2, opacity: 0.2 }} />
 
@@ -110,7 +133,7 @@ export default function MatchClient({ id }: { id: string }) {
                   <Typography sx={{ opacity: 0.75 }}>{m.fighterA.archetype}</Typography>
                   <Typography sx={{ opacity: 0.75, mt: 0.5 }}>Pool: {m.poolA.toFixed(2)}</Typography>
                 </Box>
-                <Button variant="contained" size="large" onClick={() => bet("A")}>Bet A</Button>
+                <Button variant="contained" size="large" onClick={() => openBet("A")}>Bet A</Button>
               </Stack>
 
               <Divider sx={{ my: 2, opacity: 0.2 }} />
@@ -121,7 +144,7 @@ export default function MatchClient({ id }: { id: string }) {
                   <Typography sx={{ opacity: 0.75 }}>{m.fighterB.archetype}</Typography>
                   <Typography sx={{ opacity: 0.75, mt: 0.5 }}>Pool: {m.poolB.toFixed(2)}</Typography>
                 </Box>
-                <Button variant="contained" color="success" size="large" onClick={() => bet("B")} sx={{ color: "#fff" }}>
+                <Button variant="contained" color="success" size="large" onClick={() => openBet("B")} sx={{ color: "#fff" }}>
                   Bet B
                 </Button>
               </Stack>
@@ -156,6 +179,31 @@ export default function MatchClient({ id }: { id: string }) {
           </CardContent>
         </Card>
       ) : null}
+
+      <Dialog open={betOpen} onClose={() => setBetOpen(false)} fullWidth maxWidth="xs">
+        <DialogTitle>Place bet</DialogTitle>
+        <DialogContent>
+          <Stack spacing={1.25} sx={{ pt: 1 }}>
+            <Typography sx={{ opacity: 0.8 }}>
+              Betting on: <b>{betSide === "A" ? m.fighterA.name : betSide === "B" ? m.fighterB.name : ""}</b>
+            </Typography>
+            <TextField
+              label="Amount (USDC)"
+              value={betAmt}
+              onChange={(e) => setBetAmt(e.target.value)}
+              inputMode="decimal"
+              autoFocus
+            />
+            <Typography sx={{ opacity: 0.65, fontSize: 12 }}>
+              Simulated for now. Wallet/USDC comes next.
+            </Typography>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setBetOpen(false)} color="inherit">Cancel</Button>
+          <Button onClick={confirmBet} variant="contained">Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </Stack>
   );
 }
