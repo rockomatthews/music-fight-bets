@@ -1,5 +1,5 @@
 import { TopBar } from "./components/TopBar";
-import FeedClient from "./FeedClient";
+import HomeClient from "./home/HomeClient";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +8,7 @@ export default function HomePage() {
     <>
       <TopBar />
       <div className="mfbWrap">
-        <FeedClient />
+        <HomeClient />
       </div>
     </>
   );

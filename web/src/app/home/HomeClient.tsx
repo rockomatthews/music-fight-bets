@@ -10,6 +10,7 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 export default function HomeClient() {
   const [videoId, setVideoId] = useState<string | null>(null);
   const [status, setStatus] = useState<string>("");
+  const [, setRenderStatus] = useState<string | null>(null);
 
   async function load() {
     setStatus("Loading preview...");
@@ -23,11 +24,22 @@ export default function HomeClient() {
     }
 
     const vid = j?.videoId as string | undefined;
+    const st = (j?.status as string | undefined) || null;
+    setRenderStatus(st);
+
     if (!vid) {
-      setStatus("Preview not ready yet.");
+      setStatus("Preview not set yet. Generate one in Admin.");
       setVideoId(null);
       return;
     }
+
+    // If the render isn't completed yet, don't try to stream it.
+    if (st && st !== "completed") {
+      setStatus(`Preview render is ${st}… check back in a minute.`);
+      setVideoId(null);
+      return;
+    }
+
     setVideoId(vid);
     setStatus("");
   }

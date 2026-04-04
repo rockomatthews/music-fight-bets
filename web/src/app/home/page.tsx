@@ -1,15 +1,5 @@
-import { TopBar } from "../components/TopBar";
-import HomeClient from "./HomeClient";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default function HomeSplash() {
-  return (
-    <>
-      <TopBar />
-      <div className="mfbWrap">
-        <HomeClient />
-      </div>
-    </>
-  );
+export default function HomeRedirect() {
+  redirect("/");
 }

@@ -16,5 +16,7 @@ export async function GET() {
   if (error) return NextResponse.json({ ok: false, error: "db_read_failed", detail: error.message }, { status: 500 });
 
   const videoId = (data as any)?.value?.video_id || null;
-  return NextResponse.json({ ok: true, videoId });
+  const status = (data as any)?.value?.status || null;
+
+  return NextResponse.json({ ok: true, videoId, status });
 }
