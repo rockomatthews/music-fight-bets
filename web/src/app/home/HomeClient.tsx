@@ -25,6 +25,10 @@ export default function HomeClient() {
 
     const vid = j?.videoId as string | undefined;
     const st = (j?.status as string | undefined) || null;
+    const progress = j?.progress ?? null;
+    const lastCheckedAt = j?.lastCheckedAt ?? null;
+    const lastError = j?.lastError ?? null;
+
     setRenderStatus(st);
 
     if (!vid) {
@@ -35,7 +39,17 @@ export default function HomeClient() {
 
     // If the render isn't completed yet, don't try to stream it.
     if (st && st !== "completed") {
-      setStatus(`Preview render is ${st}… check back in a minute.`);
+      const bits = [
+        `Preview render is ${st}`,
+        progress != null ? `progress ${progress}%` : null,
+        lastCheckedAt ? `checked ${new Date(lastCheckedAt).toLocaleTimeString()}` : null,
+      ].filter(Boolean);
+
+      if (st === "failed") {
+        setStatus(`Preview failed. ${lastError ? `Error: ${typeof lastError === "string" ? lastError : JSON.stringify(lastError)}` : ""}`);
+      } else {
+        setStatus(bits.join(" • ") + "…");
+      }
       setVideoId(null);
       return;
     }
@@ -46,6 +60,8 @@ export default function HomeClient() {
 
   useEffect(() => {
     load();
+    const t = setInterval(load, 15000);
+    return () => clearInterval(t);
   }, []);
 
   return (

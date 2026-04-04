@@ -17,6 +17,9 @@ export async function GET() {
 
   const videoId = (data as any)?.value?.video_id || null;
   const status = (data as any)?.value?.status || null;
+  const progress = (data as any)?.value?.progress ?? null;
+  const lastCheckedAt = (data as any)?.value?.last_checked_at ?? null;
+  const lastError = (data as any)?.value?.last_error ?? null;
 
-  return NextResponse.json({ ok: true, videoId, status });
+  return NextResponse.json({ ok: true, videoId, status, progress, lastCheckedAt, lastError });
 }

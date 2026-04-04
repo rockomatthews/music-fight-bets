@@ -9,6 +9,10 @@
       "schedule": "*/1 * * * *"
     },
     {
+      "path": "/api/cron/poll_preview",
+      "schedule": "*/1 * * * *"
+    },
+    {
       "path": "/api/cron/daily_fighter_state",
       "schedule": "10 7 * * *"
     }
