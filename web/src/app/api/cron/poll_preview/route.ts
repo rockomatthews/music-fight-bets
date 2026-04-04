@@ -10,15 +10,24 @@ function bearer(req: Request) {
   return m?.[1] || "";
 }
 
+function querySecret(req: Request) {
+  const url = new URL(req.url);
+  return url.searchParams.get("secret") || "";
+}
+
 function cronAuthed(req: Request) {
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret) return bearer(req) === cronSecret;
 
+  // Primary: Vercel Cron uses Authorization: Bearer <CRON_SECRET>
+  if (cronSecret && bearer(req) === cronSecret) return true;
+
+  // Manual trigger fallback: allow ?secret=<CRON_SECRET>
+  if (cronSecret && querySecret(req) === cronSecret) return true;
+
+  // Legacy fallback: ?secret=<MFB_CRON_SECRET>
   const legacy = process.env.MFB_CRON_SECRET;
-  if (legacy) {
-    const url = new URL(req.url);
-    return (url.searchParams.get("secret") || "") === legacy;
-  }
+  if (legacy && querySecret(req) === legacy) return true;
+
   return false;
 }
 
