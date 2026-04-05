@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Box, Button, Stack, Typography } from "@mui/material";
@@ -66,13 +67,22 @@ export default function HomeClient() {
 
   return (
     <Stack spacing={2.2} sx={{ mt: 1 }}>
-      <Stack spacing={0.75}>
-        <Typography variant="h2">Music Fights</Typography>
-        <Typography sx={{ opacity: 0.78, maxWidth: 780 }}>
-          Pick a side. Bet USDC on Base. Winners get paid. Each matchup gets a cinematic AI fight clip.
-          (Fighters are original characters — no real people.)
-        </Typography>
-      </Stack>
+      {/* homepage-only logo */}
+      <Box sx={{ display: "flex", justifyContent: "center", py: { xs: 1.5, sm: 2.5 } }}>
+        <Image
+          src="/logo-print.png"
+          alt="Music Fights"
+          width={520}
+          height={110}
+          priority
+          style={{
+            width: "min(520px, 92vw)",
+            height: "auto",
+            objectFit: "contain",
+            filter: "drop-shadow(0 12px 32px rgba(0,0,0,0.55))",
+          }}
+        />
+      </Box>
 
       <Box sx={{ borderRadius: 0, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)" }}>
         {videoId ? (
@@ -93,22 +103,10 @@ export default function HomeClient() {
         )}
       </Box>
 
-      <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
-        Preview clip (pinned). Want a different one? Generate a new preview in Admin.
-      </Typography>
-
       <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
-        <Button component={Link} href="/" variant="contained" size="large">
-          Enter Feed
+        <Button component={Link} href="/arena" variant="contained" size="large">
+          Enter Arena
         </Button>
-      </Stack>
-
-      <Typography sx={{ fontWeight: 950, mt: 1 }}>How it works</Typography>
-      <Stack spacing={0.6}>
-        <Typography sx={{ opacity: 0.78 }}>1) Fights are scheduled (betting window opens/closes).</Typography>
-        <Typography sx={{ opacity: 0.78 }}>2) You bet on Fighter A or Fighter B.</Typography>
-        <Typography sx={{ opacity: 0.78 }}>3) The fight resolves and the winner is posted.</Typography>
-        <Typography sx={{ opacity: 0.78 }}>4) A highlight clip is generated for the match.</Typography>
       </Stack>
     </Stack>
   );

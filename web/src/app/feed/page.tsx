@@ -1,15 +1,5 @@
-import { TopBar } from "../components/TopBar";
-import FeedClient from "../FeedClient";
-
-export const dynamic = "force-dynamic";
+import { redirect } from "next/navigation";
 
 export default function FeedPage() {
-  return (
-    <>
-      <TopBar />
-      <div className="mfbWrap">
-        <FeedClient />
-      </div>
-    </>
-  );
+  redirect("/arena");
 }
