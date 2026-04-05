@@ -79,12 +79,29 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: "openai_status_failed", detail });
   }
 
+  let last_error: any = null;
+
+  // If OpenAI reports failed, try to pull a more specific failure reason
+  if (j.status === "failed") {
+    try {
+      const cRes = await fetch(`https://api.openai.com/v1/videos/${encodeURIComponent(videoId)}/content`, {
+        headers: { Authorization: `Bearer ${key}` },
+      });
+      if (!cRes.ok) {
+        const txt = await cRes.text().catch(() => "");
+        last_error = txt || "Video generation failed";
+      }
+    } catch (e: any) {
+      last_error = String(e?.message || e);
+    }
+  }
+
   const patch = {
     ...value,
     status: j.status,
     progress: j.progress ?? null,
     last_checked_at: new Date().toISOString(),
-    last_error: null,
+    last_error,
   };
 
   const { error: uErr } = await sb

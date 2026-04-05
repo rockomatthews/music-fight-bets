@@ -19,7 +19,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   // allow partial content
   if (!(res.status === 200 || res.status === 206)) {
     const text = await res.text().catch(() => "");
-    return NextResponse.json({ ok: false, error: "upstream_failed", detail: text }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "upstream_failed", detail: text }, { status: 502 });
   }
 
   const buf = await res.arrayBuffer();

@@ -60,7 +60,16 @@ export async function POST(req: Request) {
   const aLook = `${aName} look: ${aAttrs.silhouette || ""}. Props: ${aAttrs.prop || ""}. Stage: ${aAttrs.stage_fx || ""}.`;
   const bLook = `${bName} look: ${bAttrs.silhouette || ""}. Props: ${bAttrs.prop || ""}. Stage: ${bAttrs.stage_fx || ""}.`;
 
-  const prompt = `8-second cinematic music-arena boxing performance (non-graphic). Establishing walkout shot → face-off → fast exchange → decisive moment. Two original fictional music-fighter archetypes: ${aName} (${aStyle}) vs ${bName} (${bStyle}).
+  const prompt = `10-second cinematic music-arena boxing performance (non-graphic) with clear beats.
+
+Beat order:
+1) Intro for ${aName}
+2) Intro for ${bName}
+3) The fight (2–3 exchanges)
+4) A clear winning blow (non-graphic)
+5) Champion crowned (trophy/belt, spotlight)
+
+Two original fictional music-fighter archetypes: ${aName} (${aStyle}) vs ${bName} (${bStyle}).
 
 Make it unmistakably musician-coded:
 - Visible non-branded stage props (mic stands, amp stacks, cables, spotlights).
@@ -75,7 +84,7 @@ End with a clear winner pose (non-graphic). Vibrant concert lighting, smoke haze
   const res = await fetch("https://api.openai.com/v1/videos", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "sora-2", prompt, size: "1280x720", seconds: "8" }),
+    body: JSON.stringify({ model: "sora-2", prompt, size: "1280x720", seconds: "10" }),
   });
   const j = await res.json().catch(() => null);
   if (!res.ok || !j?.id) {
