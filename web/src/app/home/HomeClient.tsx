@@ -70,13 +70,13 @@ export default function HomeClient() {
       {/* homepage-only logo */}
       <Box sx={{ display: "flex", justifyContent: "center", py: { xs: 1.5, sm: 2.5 } }}>
         <Image
-          src="/logo-print.png"
+          src="/logo.png"
           alt="Music Fights"
           width={520}
-          height={110}
+          height={520}
           priority
           style={{
-            width: "min(520px, 92vw)",
+            width: "min(360px, 78vw)",
             height: "auto",
             objectFit: "contain",
             filter: "drop-shadow(0 12px 32px rgba(0,0,0,0.55))",
