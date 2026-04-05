@@ -12,22 +12,25 @@ export function TopBar() {
         <AppBar position="static" color="transparent" elevation={0}>
           <Toolbar disableGutters sx={{ display: "flex", gap: 1.5 }}>
             <Box sx={{ flex: 1, display: "flex", alignItems: "center", gap: 1.5 }}>
-              <Image
-                src="/logo-print.png"
-                alt="Music Fights"
-                width={isMobile ? 132 : 168}
-                height={isMobile ? 28 : 34}
-                style={{
-                  width: isMobile ? 132 : 168,
-                  height: isMobile ? 28 : 34,
-                  borderRadius: 8,
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  objectFit: "contain",
-                  padding: 4,
-                  background: "rgba(255,255,255,0.03)",
-                }}
-                priority
-              />
+              <Link href="/" style={{ display: "inline-flex" }} aria-label="Home">
+                <Image
+                  src="/logo-print.png"
+                  alt="Music Fights"
+                  width={isMobile ? 132 : 168}
+                  height={isMobile ? 28 : 34}
+                  style={{
+                    width: isMobile ? 132 : 168,
+                    height: isMobile ? 28 : 34,
+                    borderRadius: 8,
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    objectFit: "contain",
+                    padding: 4,
+                    background: "rgba(255,255,255,0.03)",
+                    cursor: "pointer",
+                  }}
+                  priority
+                />
+              </Link>
               {!isMobile ? (
                 <Typography sx={{ opacity: 0.7, fontSize: 13 }}>
                   USDC on Base • provably-fair
