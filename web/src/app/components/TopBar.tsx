@@ -18,16 +18,16 @@ export function TopBar() {
                 <Image
                   src="/logo-print.png"
                   alt="Music Fights"
-                  width={isMobile ? 132 : 168}
-                  height={isMobile ? 28 : 34}
+                  width={isMobile ? 160 : 220}
+                  height={isMobile ? 34 : 44}
                   style={{
-                    width: isMobile ? 132 : 168,
-                    height: isMobile ? 28 : 34,
-                    borderRadius: 8,
-                    border: "1px solid rgba(255,255,255,0.12)",
+                    width: isMobile ? 160 : 220,
+                    height: isMobile ? 34 : 44,
+                    borderRadius: 0,
+                    border: "none",
                     objectFit: "contain",
-                    padding: 4,
-                    background: "rgba(255,255,255,0.03)",
+                    padding: 0,
+                    background: "transparent",
                     cursor: "pointer",
                   }}
                   priority
