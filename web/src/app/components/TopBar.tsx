@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { AppBar, Box, Button, Toolbar, Typography, useMediaQuery } from "@mui/material";
