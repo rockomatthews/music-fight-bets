@@ -117,7 +117,24 @@ export default function FightersClient() {
         {!fighters.length && !status ? <Typography sx={{ opacity: 0.8 }}>No fighters yet. Run Seed in Admin.</Typography> : null}
       </Stack>
 
-      <Drawer anchor={isMobile ? "bottom" : "right"} open={!!openId} onClose={() => setOpenId(null)}>
+      <Drawer
+        anchor={isMobile ? "bottom" : "right"}
+        open={!!openId}
+        onClose={() => setOpenId(null)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#0a0a12",
+            backgroundImage: "none",
+          },
+        }}
+        ModalProps={{
+          BackdropProps: {
+            sx: {
+              backgroundColor: "rgba(0,0,0,0.75)",
+            },
+          },
+        }}
+      >
         <div style={{ width: isMobile ? "auto" : 420, maxWidth: "90vw", padding: 18 }}>
           {current ? (
             <>
