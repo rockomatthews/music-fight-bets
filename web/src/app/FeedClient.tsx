@@ -103,12 +103,16 @@ export default function FeedClient() {
     <Stack spacing={2.2}>
       <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} alignItems={{ sm: "center" }}>
         <Box sx={{ flex: 1 }}>
-          <Typography variant="h3">Tonight’s card</Typography>
-          <Typography sx={{ opacity: 0.78 }}>
-            Simulated betting is live. Real USDC on Base comes next.
+          <Typography variant={"h4"} sx={{ fontWeight: 950 }}>
+            Arena
+          </Typography>
+          <Typography sx={{ opacity: 0.78, fontSize: { xs: 13, sm: 14 } }}>
+            Simulated betting for now. Real USDC on Base comes next.
           </Typography>
         </Box>
-        <Button variant="outlined" onClick={load}>Refresh</Button>
+        <Button variant="outlined" onClick={load} size={"small"}>
+          Refresh
+        </Button>
       </Stack>
 
       <Card>
@@ -120,9 +124,14 @@ export default function FeedClient() {
                 Open fights are bettable. Closed fights show results + video.
               </Typography>
             </Box>
-            <Tabs value={tab} onChange={(_e, v) => setTab(v)}>
-              <Tab value="open" label="Open fights" />
-              <Tab value="closed" label="Closed fights" />
+            <Tabs
+              value={tab}
+              onChange={(_e, v) => setTab(v)}
+              variant="fullWidth"
+              sx={{ width: { xs: "100%", sm: "auto" } }}
+            >
+              <Tab value="open" label="Open" />
+              <Tab value="closed" label="Closed" />
             </Tabs>
           </Stack>
         </CardContent>
@@ -146,36 +155,42 @@ export default function FeedClient() {
                     <Image
                       src={m.fighterA.avatarUrl || `https://api.dicebear.com/7.x/bottts/png?seed=${encodeURIComponent(m.fighterA.id)}&backgroundColor=070712&radius=16&size=64`}
                       alt={m.fighterA.name}
-                      width={36}
-                      height={36}
-                      style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.10)" }}
+                      width={40}
+                      height={40}
+                      style={{ borderRadius: 16, border: "1px solid rgba(255,255,255,0.10)" }}
                     />
-                    <Typography sx={{ fontWeight: 950, fontSize: 18 }}>
-                      {m.fighterA.name} vs {m.fighterB.name}
-                    </Typography>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography sx={{ fontWeight: 950, fontSize: { xs: 16, sm: 18 }, lineHeight: 1.15 }}>
+                        {m.fighterA.name}
+                        <span style={{ opacity: 0.6, fontWeight: 800 }}> vs </span>
+                        {m.fighterB.name}
+                      </Typography>
+                      <Typography sx={{ opacity: 0.72, fontSize: 12, mt: 0.4 }}>
+                        odds A {(odds.a * 100).toFixed(0)}% • B {(odds.b * 100).toFixed(0)}%
+                      </Typography>
+                    </Box>
                     <Image
                       src={m.fighterB.avatarUrl || `https://api.dicebear.com/7.x/bottts/png?seed=${encodeURIComponent(m.fighterB.id)}&backgroundColor=070712&radius=16&size=64`}
                       alt={m.fighterB.name}
-                      width={36}
-                      height={36}
-                      style={{ borderRadius: 14, border: "1px solid rgba(255,255,255,0.10)" }}
+                      width={40}
+                      height={40}
+                      style={{ borderRadius: 16, border: "1px solid rgba(255,255,255,0.10)" }}
                     />
                   </Box>
-                  <Typography sx={{ opacity: 0.75, mt: 0.5 }}>
-                    Pools: A {m.poolA.toFixed(2)} / B {m.poolB.toFixed(2)} • implied odds A {(odds.a * 100).toFixed(0)}% / B {(odds.b * 100).toFixed(0)}%
-                  </Typography>
-                  <Typography sx={{ opacity: 0.6, mt: 0.25, fontSize: 12 }}>
-                    opens {new Date(m.opensAt).toLocaleString()} • closes {new Date(m.closeAt).toLocaleString()} • fights {new Date(m.startAt).toLocaleString()}
+
+                  <Typography sx={{ opacity: 0.65, mt: 0.9, fontSize: 12 }}>
+                    opens {new Date(m.opensAt).toLocaleString()} • closes {new Date(m.closeAt).toLocaleString()}
                   </Typography>
                 </Box>
 
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={1} sx={{ width: { xs: "100%", sm: "auto" } }}>
                   {m.status === "open" || m.status === "scheduled" ? (
                     <>
-                      <Button variant="contained" onClick={() => openBet(m.id, "A", m.fighterA.name)}>
+                      <Button fullWidth variant="contained" onClick={() => openBet(m.id, "A", m.fighterA.name)}>
                         Bet {m.fighterA.name}
                       </Button>
                       <Button
+                        fullWidth
                         variant="contained"
                         color="success"
                         onClick={() => openBet(m.id, "B", m.fighterB.name)}
@@ -185,7 +200,7 @@ export default function FeedClient() {
                       </Button>
                     </>
                   ) : null}
-                  <Button component={Link} href={`/match/${m.id}`} color="inherit">
+                  <Button fullWidth component={Link} href={`/match/${m.id}`} color="inherit" variant="outlined">
                     View
                   </Button>
                 </Stack>

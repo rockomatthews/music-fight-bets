@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Button, Card, CardContent, Chip, Divider, Drawer, Stack, Typography } from "@mui/material";
+import { Button, Card, CardContent, Chip, Divider, Drawer, Stack, Typography, useMediaQuery } from "@mui/material";
 
 type FighterDaily = {
   day: string;
@@ -37,6 +37,7 @@ function fallbackAvatar(id: string) {
 }
 
 export default function FightersClient() {
+  const isMobile = useMediaQuery("(max-width:700px)");
   const [fighters, setFighters] = useState<Fighter[]>([]);
   const [status, setStatus] = useState<string>("");
   const [openId, setOpenId] = useState<string | null>(null);
@@ -76,7 +77,16 @@ export default function FightersClient() {
             const l = f.record_l ?? 0;
             return (
               <Card key={f.id}>
-                <CardContent sx={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <CardContent
+                  onClick={() => setOpenId(f.id)}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    cursor: "pointer",
+                    "&:active": { opacity: 0.9 },
+                  }}
+                >
                   <Image
                     src={src}
                     alt={f.stage_name}
@@ -89,7 +99,13 @@ export default function FightersClient() {
                     <Typography sx={{ opacity: 0.75, fontSize: 13 }}>{f.archetype} • {f.genre}</Typography>
                     <Typography sx={{ opacity: 0.75, fontSize: 13 }}>Record: {w}-{l}</Typography>
                   </div>
-                  <Button variant="outlined" onClick={() => setOpenId(f.id)}>
+                  <Button
+                    variant="outlined"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenId(f.id);
+                    }}
+                  >
                     Details
                   </Button>
                 </CardContent>
@@ -101,8 +117,8 @@ export default function FightersClient() {
         {!fighters.length && !status ? <Typography sx={{ opacity: 0.8 }}>No fighters yet. Run Seed in Admin.</Typography> : null}
       </Stack>
 
-      <Drawer anchor="right" open={!!openId} onClose={() => setOpenId(null)}>
-        <div style={{ width: 420, maxWidth: "90vw", padding: 18 }}>
+      <Drawer anchor={isMobile ? "bottom" : "right"} open={!!openId} onClose={() => setOpenId(null)}>
+        <div style={{ width: isMobile ? "auto" : 420, maxWidth: "90vw", padding: 18 }}>
           {current ? (
             <>
               <Stack direction="row" spacing={1.5} alignItems="center">
