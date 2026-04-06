@@ -8,10 +8,17 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 
 // preview is pinned in mfb_site_config (key='preview')
 
+const SLIDES = [
+  "Review Musicians fight stats",
+  "Pick a musician to fight",
+  "Win money if they win the fight!",
+];
+
 export default function HomeClient() {
   const [videoId, setVideoId] = useState<string | null>(null);
   const [status, setStatus] = useState<string>("");
   const [, setRenderStatus] = useState<string | null>(null);
+  const [slide, setSlide] = useState(0);
 
   async function load() {
     setStatus("Loading preview...");
@@ -65,6 +72,11 @@ export default function HomeClient() {
     return () => clearInterval(t);
   }, []);
 
+  useEffect(() => {
+    const t = setInterval(() => setSlide((s) => (s + 1) % SLIDES.length), 2600);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <Stack spacing={2.2} sx={{ mt: 1 }}>
       {/* homepage-only logo */}
@@ -82,6 +94,32 @@ export default function HomeClient() {
             filter: "drop-shadow(0 12px 32px rgba(0,0,0,0.55))",
           }}
         />
+      </Box>
+
+      {/* slider */}
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          minHeight: 46,
+          mb: 1.2,
+        }}
+      >
+        <Typography
+          key={slide}
+          sx={{
+            color: "#fdd104",
+            fontWeight: 950,
+            fontStyle: "italic",
+            fontSize: { xs: 18, sm: 22 },
+            textAlign: "center",
+            letterSpacing: -0.2,
+            animation: "mfbFade 2.6s ease-in-out",
+          }}
+        >
+          {SLIDES[slide]}
+        </Typography>
       </Box>
 
       <Box sx={{ borderRadius: 0, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)" }}>
