@@ -54,6 +54,21 @@ export function ConnectButton() {
     return () => clearInterval(t);
   }, [address, chainId, eth]);
 
+  const hasEth = !!eth;
+
+  if (!hasEth) {
+    return (
+      <Button
+        variant="outlined"
+        onClick={() => {
+          window.open("https://metamask.app.link/dapp/musicfights.com", "_blank");
+        }}
+      >
+        Open in MetaMask
+      </Button>
+    );
+  }
+
   if (!address) {
     return (
       <Button variant="outlined" onClick={() => connect().catch(() => null)}>
