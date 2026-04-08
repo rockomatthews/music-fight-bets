@@ -20,7 +20,7 @@ export async function GET() {
     )
     .in("status", ["scheduled", "open"])
     .order("opens_at", { ascending: true })
-    .limit(25);
+    .limit(100);
 
   if (upErr)
     return NextResponse.json(
@@ -35,7 +35,7 @@ export async function GET() {
     )
     .in("status", ["resolved", "closed"])
     .order("created_at", { ascending: false })
-    .limit(25);
+    .limit(100);
 
   if (resErr)
     return NextResponse.json(
