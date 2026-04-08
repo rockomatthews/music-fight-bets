@@ -21,7 +21,7 @@ function promptForMatch(m: any) {
   const aLook = `${aName} look: ${aAttrs.silhouette || ""}. Props: ${aAttrs.prop || ""}. Stage: ${aAttrs.stage_fx || ""}.`;
   const bLook = `${bName} look: ${bAttrs.silhouette || ""}. Props: ${bAttrs.prop || ""}. Stage: ${bAttrs.stage_fx || ""}.`;
 
-  return `8-second cinematic music-arena boxing performance (non-graphic). Establishing walkout shot → close face-off → fast exchange → decisive moment. Two original fictional music-fighter archetypes: ${aName} (${aStyle}) vs ${bName} (${bStyle}).
+  return `12-second cinematic music-arena boxing performance (non-graphic). Establishing walkout shot → close face-off → fast exchange → decisive moment. Two original fictional music-fighter archetypes: ${aName} (${aStyle}) vs ${bName} (${bStyle}).
 
 Make it unmistakably musician-coded:
 - Visible non-branded stage props (mic stands, amp stacks, cables, spotlights).
@@ -100,7 +100,7 @@ export async function POST(req: Request) {
         model: "sora-2",
         prompt,
         size: "1280x720",
-        seconds: "8",
+        seconds: "12",
       }),
     });
 
