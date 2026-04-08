@@ -12,20 +12,39 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: "missing_env", detail: String(e?.message || e) }, { status: 500 });
   }
 
-  const { data: matches, error } = await sb
+  // Prefer scheduled/open fights first (so Arena isn't stuck showing only old resolved rows)
+  const { data: upcoming, error: upErr } = await sb
     .from("mfb_matches")
-    // Alias the two joins so PostgREST doesn't collide table names
     .select(
       "id, status, opens_at, close_at, start_at, resolved_winner, resolved_meta, fighter_a_id, fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name, archetype, avatar_url), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name, archetype, avatar_url)"
     )
+    .in("status", ["scheduled", "open"])
+    .order("opens_at", { ascending: true })
+    .limit(25);
+
+  if (upErr)
+    return NextResponse.json(
+      { ok: false, error: "db_read_failed", detail: { message: upErr.message, details: (upErr as any).details, hint: (upErr as any).hint, code: (upErr as any).code } },
+      { status: 500 }
+    );
+
+  const { data: resolved, error: resErr } = await sb
+    .from("mfb_matches")
+    .select(
+      "id, status, opens_at, close_at, start_at, resolved_winner, resolved_meta, fighter_a_id, fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name, archetype, avatar_url), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name, archetype, avatar_url)"
+    )
+    .in("status", ["resolved", "closed"])
     .order("created_at", { ascending: false })
     .limit(25);
 
-  if (error)
+  if (resErr)
     return NextResponse.json(
-      { ok: false, error: "db_read_failed", detail: { message: error.message, details: (error as any).details, hint: (error as any).hint, code: (error as any).code } },
+      { ok: false, error: "db_read_failed", detail: { message: resErr.message, details: (resErr as any).details, hint: (resErr as any).hint, code: (resErr as any).code } },
       { status: 500 }
     );
+
+  const matches = [...(upcoming || []), ...(resolved || [])];
+
 
   // Pool totals from bets (simulated)
   const matchIds = (matches || []).map((m: any) => m.id);
