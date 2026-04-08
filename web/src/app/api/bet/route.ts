@@ -29,7 +29,9 @@ export async function POST(req: Request) {
   const { data: m, error: mErr } = await sb.from("mfb_matches").select("id,status,close_at").eq("id", body.data.matchId).maybeSingle();
   if (mErr) return NextResponse.json({ ok: false, error: "db_read_failed", detail: mErr.message }, { status: 500 });
   if (!m) return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
-  if (m.status !== "open") return NextResponse.json({ ok: false, error: "not_open" }, { status: 400 });
+
+  // Allow bets for scheduled+open as long as close_at is in the future.
+  if (!["open", "scheduled"].includes(m.status)) return NextResponse.json({ ok: false, error: "not_open" }, { status: 400 });
   if (new Date(m.close_at).getTime() <= Date.now()) return NextResponse.json({ ok: false, error: "closed" }, { status: 400 });
 
   const { error } = await sb.from("mfb_bets").insert({
