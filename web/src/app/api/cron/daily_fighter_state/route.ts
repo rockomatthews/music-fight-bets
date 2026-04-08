@@ -10,10 +10,20 @@ function bearer(req: Request) {
   return m?.[1] || "";
 }
 
+function vercelCron(req: Request) {
+  // Vercel Cron sends: x-vercel-cron: 1
+  return (req.headers.get("x-vercel-cron") || "") === "1";
+}
+
 function cronAuthed(req: Request) {
+  // Primary: allow Vercel Cron without extra config
+  if (vercelCron(req)) return true;
+
+  // Secondary: Authorization bearer
   const cronSecret = process.env.CRON_SECRET;
   if (cronSecret) return bearer(req) === cronSecret;
 
+  // Legacy: query param
   const legacy = process.env.MFB_CRON_SECRET;
   if (legacy) {
     const url = new URL(req.url);
