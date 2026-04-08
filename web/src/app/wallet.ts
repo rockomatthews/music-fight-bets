@@ -23,7 +23,12 @@ export function useWallet() {
     if (!eth) return;
     try {
       const accs = (await eth.request({ method: "eth_accounts" })) as string[];
-      setAddress(accs?.[0] || null);
+      const a = accs?.[0] || null;
+      setAddress(a);
+      if (typeof window !== "undefined") {
+        if (a) window.localStorage.setItem("mfb_last_wallet", a);
+        else window.localStorage.removeItem("mfb_last_wallet");
+      }
       const cid = (await eth.request({ method: "eth_chainId" })) as string;
       setChainId(parseInt(cid, 16));
     } catch {
@@ -35,7 +40,12 @@ export function useWallet() {
     const eth = getEth();
     if (!eth) throw new Error("No wallet found");
     const accs = (await eth.request({ method: "eth_requestAccounts" })) as string[];
-    setAddress(accs?.[0] || null);
+    const a = accs?.[0] || null;
+    setAddress(a);
+    if (typeof window !== "undefined") {
+      if (a) window.localStorage.setItem("mfb_last_wallet", a);
+      else window.localStorage.removeItem("mfb_last_wallet");
+    }
     const cid = (await eth.request({ method: "eth_chainId" })) as string;
     setChainId(parseInt(cid, 16));
   }

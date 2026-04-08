@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   AppBar,
@@ -23,6 +23,14 @@ import { ConnectButton } from "./ConnectButton";
 export function TopBar() {
   const isMobile = useMediaQuery("(max-width:700px)");
   const [open, setOpen] = useState(false);
+
+  const adminAllowed = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    const secret = window.localStorage.getItem("mfb_admin_secret") || "";
+    if (secret.trim().length >= 10) return true;
+    const addr = window.localStorage.getItem("mfb_last_wallet") || "";
+    return addr.toLowerCase() === "0x57585874dbf39b18df1ad2b829f18d6bfc2ceb4b";
+  }, []);
 
   const NavList = (
     <Box sx={{ width: 280, paddingTop: 1 }} role="presentation" onClick={() => setOpen(false)}>
@@ -50,11 +58,13 @@ export function TopBar() {
             <ListItemText primary="Add funds" />
           </ListItemButton>
         </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton component={Link} href="/admin">
-            <ListItemText primary="Admin" />
-          </ListItemButton>
-        </ListItem>
+        {adminAllowed ? (
+          <ListItem disablePadding>
+            <ListItemButton component={Link} href="/admin">
+              <ListItemText primary="Admin" />
+            </ListItemButton>
+          </ListItem>
+        ) : null}
       </List>
       <Box sx={{ px: 2, pt: 1.5 }}>
         <ConnectButton />
@@ -121,9 +131,11 @@ export function TopBar() {
                 >
                   Add funds
                 </Button>
-                <Button component={Link} href="/admin" color="inherit" sx={{ opacity: 0.75 }}>
-                  Admin
-                </Button>
+                {adminAllowed ? (
+                  <Button component={Link} href="/admin" color="inherit" sx={{ opacity: 0.75 }}>
+                    Admin
+                  </Button>
+                ) : null}
                 <ConnectButton />
               </>
             )}
