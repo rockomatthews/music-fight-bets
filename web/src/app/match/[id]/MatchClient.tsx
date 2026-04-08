@@ -67,6 +67,26 @@ export default function MatchClient({ id }: { id: string }) {
     setBetOpen(true);
   }
 
+  function estPayout(amount: number) {
+    // Parimutuel estimate using current pools (will change as others bet).
+    const a = m?.poolA ?? 0;
+    const b = m?.poolB ?? 0;
+
+    const postA = betSide === "A" ? a + amount : a;
+    const postB = betSide === "B" ? b + amount : b;
+
+    const total = postA + postB;
+    const fee = total * 0.02;
+    const distributable = Math.max(0, total - fee);
+
+    const winPool = betSide === "A" ? postA : postB;
+    if (winPool <= 0) return { payout: 0, profit: 0 };
+
+    const payout = (distributable * amount) / winPool;
+    const profit = payout - amount;
+    return { payout, profit };
+  }
+
   async function confirmBet() {
     if (!betSide) return;
     const amountUsdc = Number(betAmt);
@@ -194,8 +214,19 @@ export default function MatchClient({ id }: { id: string }) {
               inputMode="decimal"
               autoFocus
             />
+            {(() => {
+              const amt = Number(betAmt);
+              if (!Number.isFinite(amt) || amt <= 0) return null;
+              const { payout, profit } = estPayout(amt);
+              return (
+                <Typography sx={{ opacity: 0.85, fontSize: 12 }}>
+                  Est. payout if you win: <b>{payout.toFixed(2)} USDC</b> (profit <b>{profit.toFixed(2)} USDC</b>)
+                </Typography>
+              );
+            })()}
+
             <Typography sx={{ opacity: 0.65, fontSize: 12 }}>
-              Simulated for now. Wallet/USDC comes next.
+              Estimate uses current pools and a 2% fee. Final payout depends on the closing pools.
             </Typography>
           </Stack>
         </DialogContent>
