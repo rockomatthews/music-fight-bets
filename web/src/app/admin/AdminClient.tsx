@@ -209,6 +209,40 @@ export default function AdminClient() {
                 <Button variant="outlined" onClick={() => generateFighters(250)}>+250</Button>
               </Stack>
             </Stack>
+
+            <Divider sx={{ opacity: 0.15 }} />
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ sm: "center" }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography sx={{ fontWeight: 950 }}>Generate today’s condition (daily stats)</Typography>
+                <Typography sx={{ opacity: 0.75, fontSize: 13 }}>
+                  Fills sleep/injury/morale/etc for all fighters for today so the stat sheet isn’t blank.
+                </Typography>
+              </Box>
+              <Button
+                variant="outlined"
+                onClick={async () => {
+                  setStatus("Generating daily stats...");
+                  const res = await fetch("/api/admin/fighters/daily_generate", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "x-admin-secret": headerSecret,
+                    },
+                    body: JSON.stringify({}),
+                  });
+                  const j = await res.json().catch(() => null);
+                  if (!res.ok || !j?.ok) {
+                    const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
+                    setStatus(`Daily generate failed: ${j?.error || "unknown"}${d}`);
+                    return;
+                  }
+                  setStatus(`Daily stats generated: upserted ${j.upserted} rows for ${j.day}.`);
+                }}
+              >
+                Generate today
+              </Button>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>
