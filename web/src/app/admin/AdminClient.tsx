@@ -74,6 +74,25 @@ export default function AdminClient() {
     setStatus(`Seeded ${j.count} fighters.`);
   }
 
+  async function generateFighters(count = 250) {
+    setStatus(`Generating ${count} fighters...`);
+    const res = await fetch("/api/admin/fighters/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-secret": headerSecret,
+      },
+      body: JSON.stringify({ count }),
+    });
+    const j = await res.json().catch(() => null);
+    if (!res.ok || !j?.ok) {
+      const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
+      setStatus(`Generate failed: ${j?.error || "unknown"}${d}`);
+      return;
+    }
+    setStatus(`Generated ${j.count} fighters.`);
+  }
+
   async function createMatch() {
     const o = Number(opensInMinutes);
     const c = Number(closeInMinutes);
@@ -148,14 +167,31 @@ export default function AdminClient() {
 
       <Card>
         <CardContent>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ sm: "center" }}>
-            <Box sx={{ flex: 1 }}>
-              <Typography sx={{ fontWeight: 950 }}>Seed fighters</Typography>
-              <Typography sx={{ opacity: 0.75, fontSize: 13 }}>
-                Loads fighters from repo seed file into Supabase.
-              </Typography>
-            </Box>
-            <Button variant="contained" onClick={seedFighters}>Seed</Button>
+          <Stack spacing={1.2}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ sm: "center" }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography sx={{ fontWeight: 950 }}>Seed fighters</Typography>
+                <Typography sx={{ opacity: 0.75, fontSize: 13 }}>
+                  Loads the starter fighter roster from the repo seed file into Supabase.
+                </Typography>
+              </Box>
+              <Button variant="contained" onClick={seedFighters}>Seed 10</Button>
+            </Stack>
+
+            <Divider sx={{ opacity: 0.15 }} />
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ sm: "center" }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography sx={{ fontWeight: 950 }}>Generate fighters</Typography>
+                <Typography sx={{ opacity: 0.75, fontSize: 13 }}>
+                  Creates lots of original fighters (no real people) with a basic look bible (silhouette/prop/stage_fx).
+                </Typography>
+              </Box>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1 }>
+                <Button variant="outlined" onClick={() => generateFighters(50)}>+50</Button>
+                <Button variant="outlined" onClick={() => generateFighters(250)}>+250</Button>
+              </Stack>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>
