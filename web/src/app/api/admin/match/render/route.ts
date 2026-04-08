@@ -31,7 +31,9 @@ Fighter looks:
 - ${aLook}
 - ${bLook}
 
-End with ${winner} clearly winning (clean KO pose or referee stop, non-graphic). Vibrant concert lighting, smoke haze, dramatic crowd lights. No logos, no text, no real people, no copyrighted characters.`;
+End with a clear finishing blow: the winner uses their signature prop to strike the opponent (stylized, non-graphic, safe). The prop impact must be visible in-frame, then cut to ${winner} victory pose holding the prop.
+
+Vibrant concert lighting, smoke haze, dramatic crowd lights. No logos, no text, no real people, no copyrighted characters.`;
 }
 
 export async function POST(req: Request) {

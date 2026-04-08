@@ -66,7 +66,7 @@ Beat order:
 1) Intro for ${aName}
 2) Intro for ${bName}
 3) The fight (2–3 exchanges)
-4) A clear winning blow (non-graphic)
+4) A clear winning blow: the winner uses their signature prop to strike the opponent (stylized, non-graphic, safe). Prop impact must be visible in-frame.
 5) Champion crowned (trophy/belt, spotlight)
 
 Two original fictional music-fighter archetypes: ${aName} (${aStyle}) vs ${bName} (${bStyle}).
@@ -79,7 +79,7 @@ Fighter looks:
 - ${aLook}
 - ${bLook}
 
-End with a clear winner pose (non-graphic). Vibrant concert lighting, smoke haze, dramatic crowd lights. No logos, no text, no real people, no copyrighted characters.`;
+End with the winner holding their prop in a victory pose (non-graphic). Vibrant concert lighting, smoke haze, dramatic crowd lights. No logos, no text, no real people, no copyrighted characters.`;
 
   const res = await fetch("https://api.openai.com/v1/videos", {
     method: "POST",
