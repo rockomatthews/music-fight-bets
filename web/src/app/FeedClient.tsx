@@ -147,7 +147,14 @@ export default function FeedClient() {
         .map((m) => {
         const odds = impliedOdds(m.poolA, m.poolB);
         return (
-          <Card key={m.id}>
+          <Card
+            key={m.id}
+            sx={{
+              backgroundColor: "#fdd104",
+              backgroundImage: "none",
+              border: "1px solid rgba(0,0,0,0.18)",
+            }}
+          >
             <CardContent>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2} alignItems={{ sm: "center" }}>
                 <Box sx={{ flex: 1 }}>
@@ -160,12 +167,12 @@ export default function FeedClient() {
                       style={{ borderRadius: 16, border: "1px solid rgba(255,255,255,0.10)" }}
                     />
                     <Box sx={{ flex: 1 }}>
-                      <Typography sx={{ fontWeight: 950, fontSize: { xs: 16, sm: 18 }, lineHeight: 1.15 }}>
+                      <Typography sx={{ fontWeight: 950, color: "#0a0a12", fontSize: { xs: 16, sm: 18 }, lineHeight: 1.15 }}>
                         {m.fighterA.name}
                         <span style={{ opacity: 0.6, fontWeight: 800 }}> vs </span>
                         {m.fighterB.name}
                       </Typography>
-                      <Typography sx={{ opacity: 0.72, fontSize: 12, mt: 0.4 }}>
+                      <Typography sx={{ opacity: 0.85, color: "#0a0a12", fontSize: 12, mt: 0.4 }}>
                         odds A {(odds.a * 100).toFixed(0)}% • B {(odds.b * 100).toFixed(0)}%
                       </Typography>
                     </Box>
@@ -178,7 +185,7 @@ export default function FeedClient() {
                     />
                   </Box>
 
-                  <Typography sx={{ opacity: 0.65, mt: 0.9, fontSize: 12 }}>
+                  <Typography sx={{ opacity: 0.85, color: "#0a0a12", mt: 0.9, fontSize: 12 }}>
                     opens {new Date(m.opensAt).toLocaleString()} • closes {new Date(m.closeAt).toLocaleString()}
                   </Typography>
                 </Box>
