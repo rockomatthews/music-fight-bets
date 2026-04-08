@@ -64,9 +64,33 @@ export default function FightersClient() {
   return (
     <>
       <Stack spacing={2} sx={{ mt: 1 }}>
-        <Typography variant="h4">Fighters</Typography>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1} alignItems={{ sm: "center" }}>
+          <Typography variant="h4" sx={{ flex: 1 }}>Fighters</Typography>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => load()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") load();
+            }}
+            style={{
+              padding: "8px 12px",
+              borderRadius: 12,
+              border: "1px solid rgba(255,255,255,0.16)",
+              background: "rgba(255,255,255,0.04)",
+              cursor: "pointer",
+              fontWeight: 900,
+              fontSize: 12,
+              opacity: 0.9,
+              width: "fit-content",
+            }}
+          >
+            Refresh
+          </div>
+        </Stack>
+
         <Typography sx={{ opacity: 0.78 }}>
-          Tap a fighter to see the full stat sheet: record, strengths/weaknesses, and today’s condition.
+          Showing <b>{fighters.length}</b> fighters. Tap a fighter to see the full stat sheet.
         </Typography>
 
         {status ? <Typography sx={{ opacity: 0.8 }}>{status}</Typography> : null}
