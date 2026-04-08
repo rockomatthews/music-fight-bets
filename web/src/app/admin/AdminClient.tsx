@@ -243,6 +243,40 @@ export default function AdminClient() {
                 Generate today
               </Button>
             </Stack>
+
+            <Divider sx={{ opacity: 0.15 }} />
+
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ sm: "center" }}>
+              <Box sx={{ flex: 1 }}>
+                <Typography sx={{ fontWeight: 950 }}>Generate strengths + weaknesses</Typography>
+                <Typography sx={{ opacity: 0.75, fontSize: 13 }}>
+                  Fills fun, balanced strengths/weaknesses/style tags for fighters that don’t have them yet.
+                </Typography>
+              </Box>
+              <Button
+                variant="outlined"
+                onClick={async () => {
+                  setStatus("Generating traits...");
+                  const res = await fetch("/api/admin/fighters/traits_generate", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "x-admin-secret": headerSecret,
+                    },
+                    body: JSON.stringify({}),
+                  });
+                  const j = await res.json().catch(() => null);
+                  if (!res.ok || !j?.ok) {
+                    const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
+                    setStatus(`Traits generate failed: ${j?.error || "unknown"}${d}`);
+                    return;
+                  }
+                  setStatus(`Traits generated: updated ${j.updated} fighters.`);
+                }}
+              >
+                Generate traits
+              </Button>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>
