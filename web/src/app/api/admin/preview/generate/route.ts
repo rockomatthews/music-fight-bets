@@ -60,7 +60,7 @@ export async function POST(req: Request) {
   const aLook = `${aName} look: ${aAttrs.silhouette || ""}. Props: ${aAttrs.prop || ""}. Stage: ${aAttrs.stage_fx || ""}.`;
   const bLook = `${bName} look: ${bAttrs.silhouette || ""}. Props: ${bAttrs.prop || ""}. Stage: ${bAttrs.stage_fx || ""}.`;
 
-  const prompt = `10-second cinematic music-arena boxing performance (non-graphic) with clear beats.
+  const prompt = `12-second cinematic music-arena boxing performance (non-graphic) with clear beats.
 
 Beat order:
 1) Intro for ${aName}
@@ -84,7 +84,7 @@ End with a clear winner pose (non-graphic). Vibrant concert lighting, smoke haze
   const res = await fetch("https://api.openai.com/v1/videos", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: "sora-2", prompt, size: "1280x720", seconds: "10" }),
+    body: JSON.stringify({ model: "sora-2", prompt, size: "1280x720", seconds: "12" }),
   });
   const j = await res.json().catch(() => null);
   if (!res.ok || !j?.id) {
