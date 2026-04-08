@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -37,6 +38,7 @@ export default function AdminClient() {
   const [secret, setSecretState] = useState("");
   const [status, setStatus] = useState<string>("");
   const [feed, setFeed] = useState<FeedRow[]>([]);
+  const [fighters, setFighters] = useState<{ id: string; stage_name: string }[]>([]);
 
   const [fighterAId, setFighterAId] = useState("vf_barogue");
   const [fighterBId, setFighterBId] = useState("nk_neonkeys");
@@ -55,6 +57,20 @@ export default function AdminClient() {
       return;
     }
     setFeed(j.rows || []);
+  }
+
+  async function loadFighters() {
+    const res = await fetch("/api/fighters");
+    const j = await res.json().catch(() => null);
+    if (!res.ok || !j?.ok) return;
+    const list = (j.fighters || []).map((f: any) => ({ id: f.id, stage_name: f.stage_name }));
+    setFighters(list);
+
+    // If defaults are missing, pick first two.
+    if (list.length >= 2) {
+      setFighterAId((prev) => (list.some((x: any) => x.id === prev) ? prev : list[0].id));
+      setFighterBId((prev) => (list.some((x: any) => x.id === prev) ? prev : list[1].id));
+    }
   }
 
   async function seedFighters() {
@@ -133,6 +149,7 @@ export default function AdminClient() {
     const s = getSecret();
     setSecretState(s);
     loadFeed();
+    loadFighters();
   }, []);
 
   return (
@@ -159,7 +176,7 @@ export default function AdminClient() {
                 fullWidth
                 size="small"
               />
-              <Button variant="outlined" onClick={loadFeed}>Refresh</Button>
+              <Button variant="outlined" onClick={() => { loadFeed(); loadFighters(); }}>Refresh</Button>
             </Stack>
           </Stack>
         </CardContent>
@@ -238,19 +255,35 @@ export default function AdminClient() {
             <Typography sx={{ fontWeight: 950 }}>Create match</Typography>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2}>
               <TextField
-                label="Fighter A id"
+                label="Fighter A"
                 value={fighterAId}
                 onChange={(e) => setFighterAId(e.target.value)}
                 size="small"
                 fullWidth
-              />
+                select
+                SelectProps={{ native: true }}
+              >
+                {fighters.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.stage_name} ({f.id})
+                  </option>
+                ))}
+              </TextField>
               <TextField
-                label="Fighter B id"
+                label="Fighter B"
                 value={fighterBId}
                 onChange={(e) => setFighterBId(e.target.value)}
                 size="small"
                 fullWidth
-              />
+                select
+                SelectProps={{ native: true }}
+              >
+                {fighters.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.stage_name} ({f.id})
+                  </option>
+                ))}
+              </TextField>
             </Stack>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ sm: "center" }}>
               <TextField
