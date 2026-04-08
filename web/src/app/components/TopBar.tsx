@@ -54,6 +54,11 @@ export function TopBar() {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
+          <ListItemButton component={Link} href="/my-bets">
+            <ListItemText primary="My Bets" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
           <ListItemButton component={Link} href="https://www.coinbase.com/buy/usdc" target="_blank" rel="noreferrer">
             <ListItemText primary="Add funds" />
           </ListItemButton>
@@ -120,6 +125,9 @@ export function TopBar() {
                 </Button>
                 <Button component={Link} href="/fighters" color="inherit" sx={{ opacity: 0.9 }}>
                   Fighters
+                </Button>
+                <Button component={Link} href="/my-bets" color="inherit" sx={{ opacity: 0.9 }}>
+                  My Bets
                 </Button>
                 <Button
                   component={Link}

@@ -54,8 +54,8 @@ export default function MatchClient({ id }: { id: string }) {
       closeAt: match.close_at,
       fighterA: { id: match.fighterA.id, name: match.fighterA.stage_name, archetype: match.fighterA.archetype },
       fighterB: { id: match.fighterB.id, name: match.fighterB.stage_name, archetype: match.fighterB.archetype },
-      poolA: 0,
-      poolB: 0,
+      poolA: match.poolA || 0,
+      poolB: match.poolB || 0,
     } as any);
 
     setRender(j.render ? { status: j.render.status, video_id: j.render.video_id } : null);
