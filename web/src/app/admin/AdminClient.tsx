@@ -268,10 +268,11 @@ export default function AdminClient() {
                   const j = await res.json().catch(() => null);
                   if (!res.ok || !j?.ok) {
                     const d = j?.detail ? ` (${typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail)})` : "";
-                    setStatus(`Traits generate failed: ${j?.error || "unknown"}${d}`);
+                    setStatus(`Traits generate failed: HTTP ${res.status} ${j?.error || "unknown"}${d}`);
                     return;
                   }
                   setStatus(`Traits generated: updated ${j.updated} fighters.`);
+                  await loadFighters();
                 }}
               >
                 Generate traits
