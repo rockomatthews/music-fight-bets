@@ -3,7 +3,8 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Button, Card, CardContent, Chip, Divider, Drawer, Stack, Typography, useMediaQuery } from "@mui/material";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { Card, CardContent, Chip, Divider, Drawer, Stack, Typography, useMediaQuery } from "@mui/material";
 
 type FighterDaily = {
   day: string;
@@ -76,38 +77,47 @@ export default function FightersClient() {
             const w = f.record_w ?? 0;
             const l = f.record_l ?? 0;
             return (
-              <Card key={f.id}>
+              <Card
+                key={f.id}
+                sx={{
+                  backgroundColor: "rgba(10,10,18,0.98)",
+                  backgroundImage: "none",
+                  border: "1px solid rgba(255,255,255,0.10)",
+                }}
+              >
                 <CardContent
                   onClick={() => setOpenId(f.id)}
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 12,
+                    gap: 1.25,
                     cursor: "pointer",
+                    px: 1.5,
+                    py: 1.25,
                     "&:active": { opacity: 0.9 },
                   }}
                 >
                   <Image
                     src={src}
                     alt={f.stage_name}
-                    width={56}
-                    height={56}
-                    style={{ borderRadius: 18, border: "1px solid rgba(255,255,255,0.10)" }}
+                    width={52}
+                    height={52}
+                    style={{ borderRadius: 16, border: "1px solid rgba(255,255,255,0.10)" }}
                   />
-                  <div style={{ flex: 1 }}>
-                    <Typography sx={{ fontWeight: 950 }}>{f.stage_name}</Typography>
-                    <Typography sx={{ opacity: 0.75, fontSize: 13 }}>{f.archetype} • {f.genre}</Typography>
-                    <Typography sx={{ opacity: 0.75, fontSize: 13 }}>Record: {w}-{l}</Typography>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <Typography sx={{ fontWeight: 950 }} noWrap>
+                      {f.stage_name}
+                    </Typography>
+                    <Typography sx={{ opacity: 0.78, fontSize: 13 }} noWrap>
+                      {f.archetype} • {f.genre}
+                    </Typography>
+                    <Typography sx={{ opacity: 0.75, fontSize: 12 }}>
+                      Record: {w}-{l}
+                    </Typography>
                   </div>
-                  <Button
-                    variant="outlined"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setOpenId(f.id);
-                    }}
-                  >
-                    Details
-                  </Button>
+
+                  <ChevronRightIcon style={{ opacity: 0.6 }} />
                 </CardContent>
               </Card>
             );
@@ -189,7 +199,26 @@ export default function FightersClient() {
               )}
 
               <Divider sx={{ my: 2, opacity: 0.2 }} />
-              <Button fullWidth variant="contained" onClick={() => setOpenId(null)}>Close</Button>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setOpenId(null)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") setOpenId(null);
+                }}
+                style={{
+                  width: "100%",
+                  textAlign: "center",
+                  padding: "12px 14px",
+                  borderRadius: 14,
+                  fontWeight: 950,
+                  background: "rgba(253,209,4,0.92)",
+                  color: "#0a0a12",
+                  cursor: "pointer",
+                }}
+              >
+                Close
+              </div>
             </>
           ) : (
             <Typography sx={{ opacity: 0.8 }}>No fighter selected.</Typography>
