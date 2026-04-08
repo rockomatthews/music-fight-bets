@@ -62,6 +62,8 @@ export default function HomeClient() {
       return;
     }
 
+    // Completed render can still have an expired download URL (48h).
+    // If streaming fails, /api/video/[id]/content will return 502 with detail.
     setVideoId(vid);
     setStatus("");
   }
@@ -130,6 +132,10 @@ export default function HomeClient() {
             preload="metadata"
             style={{ width: "100%", display: "block" }}
             src={`/api/video/${encodeURIComponent(videoId)}/content`}
+            onError={() => {
+              setStatus("Preview video expired (downloads expire after ~48h). Generate a new preview in Admin.");
+              setVideoId(null);
+            }}
           />
         ) : (
           <div style={{ padding: 18 }}>
