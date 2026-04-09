@@ -12,13 +12,17 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: "missing_env", detail: String(e?.message || e) }, { status: 500 });
   }
 
-  // Prefer scheduled/open fights first (so Arena isn't stuck showing only old resolved rows)
+  // Prefer bettable/upcoming fights first.
+  // Status can drift due to cron logic, so we use resolved_winner + close_at to classify.
+  const nowIso = new Date().toISOString();
+
   const { data: upcoming, error: upErr } = await sb
     .from("mfb_matches")
     .select(
       "id, status, opens_at, close_at, start_at, resolved_winner, resolved_meta, fighter_a_id, fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name, archetype, avatar_url), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name, archetype, avatar_url)"
     )
-    .in("status", ["scheduled", "open"])
+    .is("resolved_winner", null)
+    .gt("close_at", nowIso)
     .order("opens_at", { ascending: true })
     .limit(100);
 
@@ -33,7 +37,7 @@ export async function GET() {
     .select(
       "id, status, opens_at, close_at, start_at, resolved_winner, resolved_meta, fighter_a_id, fighter_b_id, fighterA:mfb_fighters!mfb_matches_fighter_a_id_fkey(stage_name, archetype, avatar_url), fighterB:mfb_fighters!mfb_matches_fighter_b_id_fkey(stage_name, archetype, avatar_url)"
     )
-    .in("status", ["resolved", "closed"])
+    .or(`resolved_winner.not.is.null,close_at.lte.${nowIso}`)
     .order("created_at", { ascending: false })
     .limit(100);
 
