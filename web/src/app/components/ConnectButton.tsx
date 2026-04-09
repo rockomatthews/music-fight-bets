@@ -88,7 +88,7 @@ export function ConnectButton() {
       ) : null}
       {!wrong ? (
         <Typography sx={{ opacity: 0.92, fontSize: 12, fontWeight: 950 }}>
-          USDC: {usdc ?? "…"}
+          USDC on Base: {usdc ?? "…"}
         </Typography>
       ) : null}
       <Typography sx={{ opacity: 0.75, fontSize: 12 }}>
