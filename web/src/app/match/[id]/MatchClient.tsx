@@ -139,7 +139,7 @@ export default function MatchClient({ id }: { id: string }) {
 
       <Card>
         <CardContent>
-          {m.status === "open" || m.status === "scheduled" ? (
+          {new Date(m.closeAt).getTime() > Date.now() && (m.status === "open" || m.status === "scheduled") ? (
             <>
               <Typography sx={{ opacity: 0.7, fontSize: 12 }}>
                 closes {new Date(m.closeAt).toLocaleString()}

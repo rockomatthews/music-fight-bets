@@ -191,7 +191,7 @@ export default function FeedClient() {
                 </Box>
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={1} sx={{ width: { xs: "100%", sm: "auto" } }}>
-                  {m.status === "open" || m.status === "scheduled" ? (
+                  {new Date(m.closeAt).getTime() > Date.now() && (m.status === "open" || m.status === "scheduled") ? (
                     <>
                       <Button fullWidth variant="contained" onClick={() => openBet(m.id, "A", m.fighterA.name)}>
                         Bet {m.fighterA.name}
