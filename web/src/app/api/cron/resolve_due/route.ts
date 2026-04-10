@@ -17,8 +17,15 @@ function querySecret(req: Request) {
   return url.searchParams.get("secret") || "";
 }
 
+function vercelCron(req: Request) {
+  return (req.headers.get("x-vercel-cron") || "") === "1";
+}
+
 function cronAuthed(req: Request) {
-  // Preferred: Vercel Cron secret via Authorization header
+  // Allow Vercel Cron without extra config
+  if (vercelCron(req)) return true;
+
+  // Preferred: Cron secret via Authorization header
   const cronSecret = process.env.CRON_SECRET;
   if (cronSecret) return bearer(req) === cronSecret;
 
